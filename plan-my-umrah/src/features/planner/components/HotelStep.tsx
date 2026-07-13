@@ -1,6 +1,7 @@
 'use client';
 
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Building2, MapPin, Star, ChevronLeft, ChevronRight, Info } from 'lucide-react';
@@ -121,22 +122,28 @@ export function HotelStep({
               <div
                 key={hotel.id}
                 onClick={() => update({ hotelId: hotel.id, name: hotel.name, stars: hotel.stars, pricePerNight: hotel.pricePerNight })}
-                className={`p-5 rounded-2xl border cursor-pointer transition-all duration-300 ${isSelected ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' : 'bg-white border-secondary/10 hover:border-primary/40 hover:bg-accent/40'}`}
+                className={`p-4 rounded-2xl border cursor-pointer transition-all duration-300 ${isSelected ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' : 'bg-white border-secondary/10 hover:border-primary/40 hover:bg-accent/40'}`}
               >
-                <div className="flex justify-between items-center">
-                  <div className="flex items-start gap-4">
-                    <div className={`p-3 rounded-xl border ${isSelected ? 'bg-primary/20 border-primary/30' : 'bg-accent border-secondary/10'}`}>
-                      <Building2 className={`w-5 h-5 ${isSelected ? 'text-primary' : 'text-secondary/60'}`} />
-                    </div>
-                    <div>
-                      <h4 className="text-base font-bold text-secondary mb-1">{hotel.name}</h4>
+                <div className="flex justify-between items-center gap-4">
+                  <div className="flex items-center gap-4 min-w-0">
+                    {hotel.image ? (
+                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 border border-secondary/10">
+                        <Image src={hotel.image} alt={hotel.name} fill className="object-cover" sizes="96px" />
+                      </div>
+                    ) : (
+                      <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-xl border flex items-center justify-center shrink-0 ${isSelected ? 'bg-primary/20 border-primary/30' : 'bg-accent border-secondary/10'}`}>
+                        <Building2 className={`w-6 h-6 ${isSelected ? 'text-primary' : 'text-secondary/60'}`} />
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <h4 className="text-base font-bold text-secondary mb-1 truncate">{hotel.name}</h4>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1"><Star className="w-3.5 h-3.5 text-primary fill-primary" /> {hotel.stars} Bintang</span>
                         <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {hotel.distance}m ke {landmark}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <div className="text-xs text-muted-foreground mb-1">per malam</div>
                     <div className="text-lg font-mono font-bold text-primary">
                       Rp {hotel.pricePerNight.toLocaleString('id-ID')}

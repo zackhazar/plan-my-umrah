@@ -35,20 +35,27 @@ export interface HotelOption {
   stars: number;
   distance: number; // meter ke Masjidil Haram / Masjid Nabawi
   pricePerNight: number; // Rupiah (referensi)
+  // Foto hotel: taruh file di public/images/hotels/<id>.jpg lalu isi path di sini,
+  // mis. '/images/hotels/m1.jpg'. Kosongkan (undefined) untuk pakai ikon placeholder.
+  image?: string;
 }
 
+// PENTING: pricePerNight & distance di bawah = REFERENSI KASAR — mohon
+// disesuaikan dengan price list terbaru (angka dari Excel hanya Dar Attauhid & Sofitel).
 export const MAKKAH_HOTELS: HotelOption[] = [
-  { id: 'm1', name: 'Fairmont Makkah Clock Royal', stars: 5, distance: 50, pricePerNight: 3500000 },
-  { id: 'm2', name: 'Swissôtel Makkah', stars: 5, distance: 100, pricePerNight: 2800000 },
-  { id: 'm3', name: 'Hilton Suites Makkah', stars: 5, distance: 200, pricePerNight: 2500000 },
-  { id: 'm4', name: 'Elaf Kinda Hotel', stars: 4, distance: 400, pricePerNight: 1200000 },
+  { id: 'm1', name: 'Fairmont Makkah Clock Royal', stars: 5, distance: 50, pricePerNight: 3500000, image: '/images/hotels/fairmont-makkah.jpg' },
+  { id: 'm2', name: 'Address Jabal Omar Makkah', stars: 5, distance: 300, pricePerNight: 3200000, image: '/images/hotels/address-jabal-omar.jpg' },
+  { id: 'm3', name: 'InterContinental Dar Attauhid', stars: 5, distance: 100, pricePerNight: 2800000, image: '/images/hotels/dar-attauhid.jpg' },
+  { id: 'm4', name: 'Al Marwa Rayhaan by Rotana', stars: 5, distance: 100, pricePerNight: 2400000, image: '/images/hotels/marwa-rotana.jpg' },
+  { id: 'm5', name: 'Makarim Ajyad Makkah', stars: 4, distance: 600, pricePerNight: 1300000, image: '/images/hotels/makarim-ajyad.jpg' },
+  { id: 'm6', name: 'Time Ruba Hotel & Suites', stars: 4, distance: 700, pricePerNight: 1000000, image: '/images/hotels/time-ruba.jpg' },
 ];
 
 export const MADINAH_HOTELS: HotelOption[] = [
-  { id: 'md1', name: 'The Oberoi, Madina', stars: 5, distance: 10, pricePerNight: 4500000 },
-  { id: 'md2', name: 'Anwar Al Madinah Mövenpick', stars: 5, distance: 50, pricePerNight: 2600000 },
-  { id: 'md3', name: 'Pullman Zamzam Madina', stars: 5, distance: 150, pricePerNight: 2300000 },
-  { id: 'md4', name: 'Rove Al Madinah', stars: 4, distance: 300, pricePerNight: 1100000 },
+  { id: 'md1', name: 'Sofitel Shahd Al Madinah', stars: 5, distance: 200, pricePerNight: 4000000, image: '/images/hotels/sofitel-madinah.jpg' },
+  { id: 'md2', name: 'Hilton Madinah', stars: 5, distance: 100, pricePerNight: 2500000, image: '/images/hotels/hilton-madinah.jpg' },
+  { id: 'md3', name: 'Al Aqeeq Hotel Madinah', stars: 4, distance: 50, pricePerNight: 1600000, image: '/images/hotels/al-aqeeq-madinah.jpg' },
+  { id: 'md4', name: 'Durrat Al Eiman', stars: 4, distance: 150, pricePerNight: 1400000, image: '/images/hotels/durrat-al-eiman.jpg' },
 ];
 
 // ============================================================
@@ -61,6 +68,9 @@ export interface CarVehicle {
   id: 'camry' | 'gmc' | 'staria' | 'hiace';
   name: string;
   seats: number;
+  // Foto kendaraan: taruh file di public/images/vehicles/<id>.jpg lalu isi path,
+  // mis. '/images/vehicles/camry.jpg'. Kosongkan untuk pakai ikon placeholder.
+  image?: string;
 }
 
 export const CAR_VEHICLES: CarVehicle[] = [
