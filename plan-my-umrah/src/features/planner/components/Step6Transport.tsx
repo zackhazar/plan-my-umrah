@@ -226,13 +226,17 @@ export function Step6Transport() {
 
         {tab === 'bus' && (
           <>
-            <div className="flex items-start gap-4">
-              <div className="p-3 rounded-xl bg-primary/10 border border-primary/20"><Bus className="w-6 h-6 text-primary" /></div>
-              <div className="flex-1">
-                <h4 className="font-bold text-secondary">{BUS_FULL_TRIP.label}</h4>
-                <p className="text-xs text-muted-foreground mt-1">Harga flat per bus untuk seluruh perjalanan: {BUS_FULL_TRIP.priceSar.toLocaleString('id-ID')} SAR.</p>
+            <div className="rounded-2xl overflow-hidden border border-secondary/10">
+              <div className="relative w-full aspect-[16/9] bg-accent">
+                <Image src="/images/vehicles/bus-vip.jpg" alt="Bus VIP Full Trip" fill className="object-cover" sizes="(max-width: 640px) 100vw, 640px" />
               </div>
-              <div className="text-xl font-mono font-bold text-primary">{rp(BUS_FULL_TRIP.price)}</div>
+              <div className="flex items-start gap-4 p-4 bg-white">
+                <div className="flex-1">
+                  <h4 className="font-bold text-secondary">{BUS_FULL_TRIP.label}</h4>
+                  <p className="text-xs text-muted-foreground mt-1">Harga flat per bus untuk seluruh perjalanan: {BUS_FULL_TRIP.priceSar.toLocaleString('id-ID')} SAR.</p>
+                </div>
+                <div className="text-xl font-mono font-bold text-primary whitespace-nowrap">{rp(BUS_FULL_TRIP.price)}</div>
+              </div>
             </div>
             <Button onClick={addBus} className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-full px-6 h-11 text-sm font-semibold">
               <Plus className="w-4 h-4 mr-1" /> Tambahkan Bus Full Trip

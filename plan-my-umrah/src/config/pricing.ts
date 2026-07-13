@@ -74,10 +74,10 @@ export interface CarVehicle {
 }
 
 export const CAR_VEHICLES: CarVehicle[] = [
-  { id: 'camry', name: 'Camry Sonata', seats: 4 },
-  { id: 'staria', name: 'Hyundai Staria', seats: 7 },
+  { id: 'camry', name: 'Camry Sonata', seats: 4, image: '/images/vehicles/camry.jpg' },
+  { id: 'staria', name: 'Hyundai Staria', seats: 7, image: '/images/vehicles/staria.jpg' },
   { id: 'gmc', name: 'GMC New Model', seats: 8 },
-  { id: 'hiace', name: 'Hiace', seats: 12 },
+  { id: 'hiace', name: 'Hiace', seats: 12, image: '/images/vehicles/hiace.webp' },
 ];
 
 export interface CarRoute {
