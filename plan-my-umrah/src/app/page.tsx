@@ -15,7 +15,9 @@ import {
   ReceiptText,
   ShieldCheck,
 } from 'lucide-react';
-import { WHATSAPP_NUMBER, COMPANY_NAME } from '@/config/pricing';
+import { Quote, Star } from 'lucide-react';
+import { WHATSAPP_NUMBER, COMPANY_NAME, TESTIMONIALS, INSTAGRAM_HANDLE } from '@/config/pricing';
+import { LogoFull, LogoMark } from '@/components/Logo';
 
 const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
   'Assalamu’alaikum, saya ingin bertanya tentang Umrah mandiri via Plan My Umrah.'
@@ -41,8 +43,8 @@ const steps = [
 
 const controls = [
   { icon: Building2, title: 'Hotel Pilihan Anda', desc: 'Bintang 4–5 dekat Masjidil Haram & Masjid Nabawi, atau masukkan harga hotel Anda sendiri.' },
-  { icon: Bus, title: 'Transportasi Fleksibel', desc: 'Bus eksekutif, Kereta Cepat Haramain, hingga private GMC untuk keluarga.' },
-  { icon: Globe, title: 'Visa & Siskopatuh', desc: 'Visa Umrah resmi terdaftar Siskopatuh Kemenag RI, atau visa turis multiple entry.' },
+  { icon: Bus, title: 'Transportasi Fleksibel', desc: 'Mobil privat (Camry, Staria, GMC, Hiace), Kereta Cepat Haramain, hingga bus full trip.' },
+  { icon: Globe, title: 'Visa & Siskopatuh', desc: 'Visa Umrah jalur normal include asuransi, plus pendaftaran resmi Siskopatuh Kemenag RI.' },
   { icon: CalendarDays, title: 'Tanggal Bebas', desc: 'Berangkat kapan pun Anda siap — bukan mengikuti jadwal rombongan travel.' },
   { icon: Wallet, title: 'Anggaran Terkendali', desc: 'Grand total terlihat sejak awal dan berubah real-time mengikuti pilihan Anda.' },
   { icon: ShieldCheck, title: 'Didampingi Travel Resmi', desc: `Direncanakan mandiri, dieksekusi bersama ${COMPANY_NAME}.` },
@@ -56,12 +58,10 @@ export default function LandingPage() {
       <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="container mx-auto px-6 md:px-12 h-18 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center">
-              <Sparkles className="w-4.5 h-4.5 text-primary" />
-            </div>
+            <LogoMark className="w-10 h-10" />
             <div className="leading-tight">
               <div className="font-heading text-lg font-bold tracking-[0.18em] text-secondary">PLAN MY UMRAH</div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden sm:block">Umrah Mandiri &middot; Transparan</div>
+              <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground hidden sm:block">by Hajar Aswad Barokah</div>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -233,6 +233,52 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Testimoni */}
+      <section className="border-t border-border bg-card py-20 md:py-24">
+        <div className="container mx-auto px-6 md:px-12">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <div className="text-[11px] uppercase tracking-[0.3em] text-primary font-semibold mb-4">Testimoni Jemaah</div>
+            <h2 className="font-heading text-3xl md:text-4xl text-secondary font-medium">
+              Ratusan Jemaah Sudah Membuktikan
+            </h2>
+            <p className="text-sm text-foreground/55 mt-4 leading-relaxed">
+              Dari transportasi, tiket, visa, hingga pendampingan — inilah kata mereka yang sudah berangkat bersama {COMPANY_NAME}.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {TESTIMONIALS.map((t) => (
+              <div key={t.name} className="rounded-3xl border border-border bg-background p-7 flex flex-col transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
+                <Quote className="w-6 h-6 text-primary/40 mb-4" />
+                <p className="text-sm text-foreground/70 leading-relaxed flex-1">&ldquo;{t.text}&rdquo;</p>
+                <div className="mt-6 pt-5 border-t border-border flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-sm font-semibold text-secondary">{t.name}</div>
+                    <div className="text-xs text-foreground/45">{t.origin} &middot; {t.service}</div>
+                  </div>
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 text-primary fill-primary" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <a
+              href={`https://instagram.com/${INSTAGRAM_HANDLE.replace('@', '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-primary hover:underline font-medium"
+            >
+              Lihat ratusan testimoni lainnya di Instagram {INSTAGRAM_HANDLE} &rarr;
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* CTA band */}
       <section className="container mx-auto px-6 md:px-12 pb-20 md:pb-24">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-secondary text-secondary-foreground px-8 py-16 md:px-16 md:py-20 text-center">
@@ -258,9 +304,9 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-border bg-card">
         <div className="container mx-auto px-6 md:px-12 py-12 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-center md:text-left">
-            <div className="font-heading text-lg font-bold tracking-[0.18em] text-secondary mb-1.5">PLAN MY UMRAH</div>
-            <div className="text-sm text-foreground/50">{COMPANY_NAME} &mdash; Travel Haji &amp; Umrah</div>
+          <div className="flex flex-col items-center md:items-start text-center md:text-left">
+            <LogoFull markClass="w-12 h-12" />
+            <div className="text-sm text-foreground/50 mt-3">{COMPANY_NAME} &mdash; Terdaftar di Nusuk &middot; Amanah, Nyaman, Profesional</div>
             <div className="text-sm text-foreground/50 flex items-center justify-center md:justify-start gap-1.5 mt-1">
               <MapPin className="w-3.5 h-3.5" /> Berkantor di Jakarta &amp; Jeddah
             </div>
