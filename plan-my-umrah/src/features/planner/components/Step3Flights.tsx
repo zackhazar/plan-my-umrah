@@ -4,6 +4,7 @@ import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PlaneTakeoff, PlaneLanding, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ARRIVAL_AIRPORTS } from '@/config/pricing';
 
 export function Step3Flights() {
   const { flight, updateFlight, setStep, travellers } = usePlannerStore();
@@ -45,8 +46,9 @@ export function Step3Flights() {
               value={flight.arrivalAirport}
               onChange={(e) => updateFlight({ arrivalAirport: e.target.value })}
             >
-              <option value="JED">Jeddah (JED)</option>
-              <option value="MED">Madinah (MED)</option>
+              {ARRIVAL_AIRPORTS.map((a) => (
+                <option key={a.code} value={a.code}>{a.label}</option>
+              ))}
             </select>
           </div>
         </div>

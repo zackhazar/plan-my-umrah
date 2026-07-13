@@ -4,6 +4,7 @@ import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Building2, MapPin, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MAKKAH_HOTELS } from '@/config/pricing';
 
 export function Step4HotelMakkah() {
   const { hotelMakkah, updateHotelMakkah, setStep } = usePlannerStore();
@@ -11,13 +12,7 @@ export function Step4HotelMakkah() {
   const handleNext = () => setStep(5);
   const handleBack = () => setStep(3);
 
-  // Mock data: Di tahap produksi, ini akan di-fetch dari Supabase
-  const makkahHotels = [
-    { id: 'm1', name: 'Fairmont Makkah Clock Royal', stars: 5, distance: 50, pricePerNight: 3500000 },
-    { id: 'm2', name: 'Swissôtel Makkah', stars: 5, distance: 100, pricePerNight: 2800000 },
-    { id: 'm3', name: 'Hilton Suites Makkah', stars: 5, distance: 200, pricePerNight: 2500000 },
-    { id: 'm4', name: 'Elaf Kinda Hotel', stars: 4, distance: 400, pricePerNight: 1200000 },
-  ];
+  const makkahHotels = MAKKAH_HOTELS;
 
   const currentNights = hotelMakkah?.nights || 1;
 

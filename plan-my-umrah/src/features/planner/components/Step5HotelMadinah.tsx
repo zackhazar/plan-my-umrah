@@ -4,6 +4,7 @@ import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Building2, MapPin, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MADINAH_HOTELS } from '@/config/pricing';
 
 export function Step5HotelMadinah() {
   const { hotelMadinah, updateHotelMadinah, setStep } = usePlannerStore();
@@ -11,13 +12,7 @@ export function Step5HotelMadinah() {
   const handleNext = () => setStep(6);
   const handleBack = () => setStep(4);
 
-  // Mock data untuk Madinah
-  const madinahHotels = [
-    { id: 'md1', name: 'The Oberoi, Madina', stars: 5, distance: 10, pricePerNight: 4500000 },
-    { id: 'md2', name: 'Anwar Al Madinah Mövenpick', stars: 5, distance: 50, pricePerNight: 2600000 },
-    { id: 'md3', name: 'Pullman Zamzam Madina', stars: 5, distance: 150, pricePerNight: 2300000 },
-    { id: 'md4', name: 'Rove Al Madinah', stars: 4, distance: 300, pricePerNight: 1100000 },
-  ];
+  const madinahHotels = MADINAH_HOTELS;
 
   const currentNights = hotelMadinah?.nights || 1;
 

@@ -3,6 +3,7 @@
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
 import { Globe, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { VISA_PACKAGES } from '@/config/pricing';
 
 export function Step7Visa() {
   const { visa, updateVisa, setStep } = usePlannerStore();
@@ -10,22 +11,7 @@ export function Step7Visa() {
   const handleNext = () => setStep(8);
   const handleBack = () => setStep(6);
 
-  const visaPackages = [
-    {
-      type: 'Visa Umrah + Siskopatuh',
-      price: 3500000,
-      includesSiskopatuh: true,
-      includesInsurance: true,
-      description: 'Visa khusus Umrah (Single Entry), sudah termasuk pendaftaran resmi Siskopatuh Kemenag RI.',
-    },
-    {
-      type: 'Visa Turis (Multiple Entry)',
-      price: 2800000,
-      includesSiskopatuh: false,
-      includesInsurance: true,
-      description: 'Visa Turis berlaku 1 tahun. Bebas keluar masuk Arab Saudi. Tanpa Siskopatuh.',
-    }
-  ];
+  const visaPackages = VISA_PACKAGES;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">

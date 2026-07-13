@@ -3,6 +3,13 @@
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
 import { Bus, Train, Car, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { TRANSPORT_PACKAGES } from '@/config/pricing';
+
+const TRANSPORT_ICONS: Record<string, React.ElementType> = {
+  bus: Bus,
+  haramain: Train,
+  gmc: Car,
+};
 
 export function Step6Transport() {
   const { transport, addTransport, setStep, travellers } = usePlannerStore();
@@ -15,29 +22,10 @@ export function Step6Transport() {
   // Karena kita pakai sistem paket All-in, kita gunakan ID statis 'main-transport'
   const currentSelection = transport.find(t => t.id === 'main-transport');
 
-  const transportPackages = [
-    {
-      vehicle: 'Bus Eksekutif',
-      route: 'Semua Rute (Bandara - Makkah - Madinah - Bandara)',
-      price: 1500000,
-      icon: Bus,
-      description: 'Transportasi standar yang nyaman dengan AC dingin, cocok untuk perjalanan santai.',
-    },
-    {
-      vehicle: 'Kereta Cepat Haramain',
-      route: 'Kereta (Makkah-Madinah) + Bus (Bandara)',
-      price: 3500000,
-      icon: Train,
-      description: 'Pangkas waktu tempuh Makkah-Madinah dari 6 jam menjadi hanya 2.5 jam. Bebas macet.',
-    },
-    {
-      vehicle: 'Private GMC / SUV',
-      route: 'Kendaraan Pribadi untuk Semua Rute',
-      price: 6500000,
-      icon: Car,
-      description: 'Privasi maksimal, jadwal fleksibel, dan kenyamanan VIP khusus untuk keluarga Anda.',
-    }
-  ];
+  const transportPackages = TRANSPORT_PACKAGES.map((pkg) => ({
+    ...pkg,
+    icon: TRANSPORT_ICONS[pkg.id] ?? Bus,
+  }));
 
   const handleSelect = (pkg: { vehicle: string; route: string; price: number }) => {
     addTransport({

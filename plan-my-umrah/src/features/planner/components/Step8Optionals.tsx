@@ -3,19 +3,22 @@
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
 import { UserCheck, Mountain, Plane, LayoutPanelLeft, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { EXTRA_SERVICES } from '@/config/pricing';
+
+const SERVICE_ICONS: Record<string, React.ElementType> = {
+  opt1: UserCheck,
+  opt2: Mountain,
+  opt3: LayoutPanelLeft,
+  opt4: Plane,
+};
 
 export function Step8Optionals() {
   const { optionals, toggleOptional, setStep } = usePlannerStore();
-  
+
   const handleNext = () => setStep(9);
   const handleBack = () => setStep(7);
 
-  const extraServices = [
-    { id: 'opt1', serviceName: 'Mutawwif / Pemandu Privat', price: 1500000, icon: UserCheck, desc: 'Pemandu ibadah pribadi selama di Makkah & Madinah.' },
-    { id: 'opt2', serviceName: 'City Tour Taif + Kereta Gantung', price: 1200000, icon: Mountain, desc: 'Perjalanan 1 hari ke kota Taif yang sejuk termasuk naik cable car.' },
-    { id: 'opt3', serviceName: 'Airport Lounge Access', price: 500000, icon: LayoutPanelLeft, desc: 'Akses ruang tunggu eksklusif di bandara Jeddah/Madinah.' },
-    { id: 'opt4', serviceName: 'Handling & Perlengkapan', price: 1000000, icon: Plane, desc: 'Bantuan koper di bandara + kain Ihram/Mukena & Tas.' },
-  ];
+  const extraServices = EXTRA_SERVICES.map((s) => ({ ...s, icon: SERVICE_ICONS[s.id] ?? Plane }));
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
