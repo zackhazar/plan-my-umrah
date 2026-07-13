@@ -2,7 +2,7 @@
 
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
-import { Receipt, Check, Printer, ChevronLeft } from 'lucide-react';
+import { Receipt, Check, ChevronLeft } from 'lucide-react';
 
 export function Step9Summary() {
   const state = usePlannerStore();

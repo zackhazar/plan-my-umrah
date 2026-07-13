@@ -2,7 +2,6 @@
 
 import { useMemo } from 'react';
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
-import { Progress } from '@/components/ui/progress';
 import { Step1Travellers } from '@/features/planner/components/Step1Travellers';
 import { Step2Dates } from '@/features/planner/components/Step2Dates';
 import { Step3Flights } from '@/features/planner/components/Step3Flights';

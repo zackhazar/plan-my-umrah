@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, Building, MapPin, Compass } from 'lucide-react';
-import Image from 'next/image';
 
 export default function LandingPage() {
   return (
@@ -61,7 +60,7 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
               <div className="relative z-10 text-center text-white">
                 <Compass className="w-16 h-16 text-primary mx-auto mb-6 opacity-80" />
-                <h3 className="font-heading text-3xl font-light italic mb-4 text-white/90">"Perjalanan Suci, <br/> Dirancang Oleh Anda."</h3>
+                <h3 className="font-heading text-3xl font-light italic mb-4 text-white/90">&ldquo;Perjalanan Suci, <br/> Dirancang Oleh Anda.&rdquo;</h3>
                 <div className="w-12 h-[1px] bg-primary/50 mx-auto mt-8"></div>
               </div>
               

@@ -39,7 +39,7 @@ export function Step6Transport() {
     }
   ];
 
-  const handleSelect = (pkg: any) => {
+  const handleSelect = (pkg: { vehicle: string; route: string; price: number }) => {
     addTransport({
       id: 'main-transport',
       route: pkg.route,

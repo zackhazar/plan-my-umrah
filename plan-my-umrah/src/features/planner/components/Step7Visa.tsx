@@ -2,15 +2,13 @@
 
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
-import { Globe, ShieldCheck, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Globe, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export function Step7Visa() {
-  const { visa, updateVisa, setStep, travellers } = usePlannerStore();
-  
+  const { visa, updateVisa, setStep } = usePlannerStore();
+
   const handleNext = () => setStep(8);
   const handleBack = () => setStep(6);
-
-  const totalTravellers = travellers.adults + travellers.children + travellers.infants;
 
   const visaPackages = [
     {

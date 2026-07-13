@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { PlannerState } from '@/types/planner.types';
+import type { PlannerState, TransportSelection, VisaSelection, OptionalService } from '@/types/planner.types';
 
 const initialValues = {
   step: 1,
@@ -41,7 +41,7 @@ export const usePlannerStore = create<PlannerState>()(
         hotelMadinah: state.hotelMadinah ? { ...state.hotelMadinah, ...data } : { hotelId: '', name: '', stars: 0, nights: 1, pricePerNight: 0, ...data }
       })),
 
-      addTransport: (data: any) => set((state) => ({
+      addTransport: (data: TransportSelection) => set((state) => ({
         transport: [...state.transport.filter(t => t.id !== data.id), data]
       })),
 
@@ -49,11 +49,11 @@ export const usePlannerStore = create<PlannerState>()(
         transport: state.transport.filter((t) => t.id !== id)
       })),
 
-      updateVisa: (data: any) => set(() => ({
+      updateVisa: (data: VisaSelection) => set(() => ({
         visa: data
       })),
 
-      toggleOptional: (data: any) => set((state) => {
+      toggleOptional: (data: OptionalService) => set((state) => {
         const exists = state.optionals.find((o) => o.id === data.id);
         if (exists) {
           return { optionals: state.optionals.filter((o) => o.id !== data.id) };
