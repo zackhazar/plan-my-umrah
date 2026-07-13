@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { PlannerState } from '@/types/planner.types';
+import type { PlannerState, TransportSelection, VisaSelection, OptionalService } from '@/types/planner.types';
 
 const initialValues = {
   step: 1,
@@ -41,7 +41,7 @@ export const usePlannerStore = create<PlannerState>()(
         hotelMadinah: state.hotelMadinah ? { ...state.hotelMadinah, ...data } : { hotelId: '', name: '', stars: 0, nights: 1, pricePerNight: 0, ...data }
       })),
 
-      addTransport: (data: any) => set((state) => ({
+      addTransport: (data: TransportSelection) => set((state) => ({
         transport: [...state.transport.filter(t => t.id !== data.id), data]
       })),
 
@@ -49,11 +49,11 @@ export const usePlannerStore = create<PlannerState>()(
         transport: state.transport.filter((t) => t.id !== id)
       })),
 
-      updateVisa: (data: any) => set(() => ({
+      updateVisa: (data: VisaSelection) => set(() => ({
         visa: data
       })),
 
-      toggleOptional: (data: any) => set((state) => {
+      toggleOptional: (data: OptionalService) => set((state) => {
         const exists = state.optionals.find((o) => o.id === data.id);
         if (exists) {
           return { optionals: state.optionals.filter((o) => o.id !== data.id) };
@@ -65,10 +65,18 @@ export const usePlannerStore = create<PlannerState>()(
     }),
     {
       name: 'pmu-planner-storage',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ 
+      // reviver: kembalikan string ISO hasil JSON.stringify menjadi Date
+      // (dibutuhkan agar dates.departure/return tetap Date setelah refresh)
+      storage: createJSONStorage(() => localStorage, {
+        reviver: (_key, value) =>
+          typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)
+            ? new Date(value)
+            : value,
+      }),
+      partialize: (state) => ({
         step: state.step,
         travellers: state.travellers,
+        dates: state.dates,
         flight: state.flight,
         hotelMakkah: state.hotelMakkah,
         hotelMadinah: state.hotelMadinah,

@@ -3,6 +3,13 @@
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
 import { Bus, Train, Car, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { TRANSPORT_PACKAGES } from '@/config/pricing';
+
+const TRANSPORT_ICONS: Record<string, React.ElementType> = {
+  bus: Bus,
+  haramain: Train,
+  gmc: Car,
+};
 
 export function Step6Transport() {
   const { transport, addTransport, setStep, travellers } = usePlannerStore();
@@ -15,31 +22,12 @@ export function Step6Transport() {
   // Karena kita pakai sistem paket All-in, kita gunakan ID statis 'main-transport'
   const currentSelection = transport.find(t => t.id === 'main-transport');
 
-  const transportPackages = [
-    {
-      vehicle: 'Bus Eksekutif',
-      route: 'Semua Rute (Bandara - Makkah - Madinah - Bandara)',
-      price: 1500000,
-      icon: Bus,
-      description: 'Transportasi standar yang nyaman dengan AC dingin, cocok untuk perjalanan santai.',
-    },
-    {
-      vehicle: 'Kereta Cepat Haramain',
-      route: 'Kereta (Makkah-Madinah) + Bus (Bandara)',
-      price: 3500000,
-      icon: Train,
-      description: 'Pangkas waktu tempuh Makkah-Madinah dari 6 jam menjadi hanya 2.5 jam. Bebas macet.',
-    },
-    {
-      vehicle: 'Private GMC / SUV',
-      route: 'Kendaraan Pribadi untuk Semua Rute',
-      price: 6500000,
-      icon: Car,
-      description: 'Privasi maksimal, jadwal fleksibel, dan kenyamanan VIP khusus untuk keluarga Anda.',
-    }
-  ];
+  const transportPackages = TRANSPORT_PACKAGES.map((pkg) => ({
+    ...pkg,
+    icon: TRANSPORT_ICONS[pkg.id] ?? Bus,
+  }));
 
-  const handleSelect = (pkg: any) => {
+  const handleSelect = (pkg: { vehicle: string; route: string; price: number }) => {
     addTransport({
       id: 'main-transport',
       route: pkg.route,
@@ -51,7 +39,7 @@ export function Step6Transport() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h2 className="text-3xl font-serif font-bold text-white mb-2 tracking-wide">Pilihan Transportasi</h2>
+        <h2 className="text-3xl font-heading font-bold text-white mb-2 tracking-wide">Pilihan Transportasi</h2>
         <p className="text-white/50 text-sm">Pilih moda transportasi selama di Tanah Suci. Harga dihitung per orang (Dewasa & Anak).</p>
       </div>
 
@@ -64,7 +52,7 @@ export function Step6Transport() {
             <div 
               key={index}
               onClick={() => handleSelect(pkg)}
-              className={`p-6 rounded-3xl border cursor-pointer transition-all duration-300 relative overflow-hidden group ${isSelected ? 'bg-primary/10 border-primary shadow-[0_0_20px_rgba(214,175,55,0.15)]' : 'bg-[#121212] border-white/5 hover:border-white/20 hover:bg-[#1a1a1a]'}`}
+              className={`p-6 rounded-3xl border cursor-pointer transition-all duration-300 relative overflow-hidden group ${isSelected ? 'bg-primary/10 border-primary shadow-[0_0_20px_rgba(214,175,55,0.15)]' : 'bg-white/[0.035] border-white/5 hover:border-white/20 hover:bg-white/[0.07]'}`}
             >
               {/* Ornamen Background saat dipilih */}
               {isSelected && (
@@ -75,7 +63,7 @@ export function Step6Transport() {
 
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
                 <div className="flex items-start gap-5">
-                  <div className={`p-4 rounded-2xl border transition-colors ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-black/40 border-white/10 text-white/60 group-hover:text-white/90'}`}>
+                  <div className={`p-4 rounded-2xl border transition-colors ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-black/30 border-white/10 text-white/60 group-hover:text-white/90'}`}>
                     <Icon className="w-7 h-7" />
                   </div>
                   <div>
