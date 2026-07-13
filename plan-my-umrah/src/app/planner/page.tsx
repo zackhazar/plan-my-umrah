@@ -33,7 +33,7 @@ export default function PlannerWizard() {
   }, [step]);
 
   return (
-    <div className="min-h-screen relative flex flex-col antialiased overflow-hidden">
+    <div className="theme-dark min-h-screen relative flex flex-col antialiased overflow-hidden bg-background text-foreground">
       <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] pointer-events-none opacity-40 mix-blend-screen" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] pointer-events-none opacity-30 mix-blend-screen" />
 
