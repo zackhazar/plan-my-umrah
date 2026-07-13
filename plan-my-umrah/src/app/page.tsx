@@ -12,14 +12,11 @@ export default function LandingPage() {
           <Sparkles className="w-5 h-5 text-primary" />
           <span>PLAN MY UMRAH</span>
         </div>
-        <div className="hidden md:flex items-center gap-10 text-sm font-medium tracking-wide text-secondary/80">
-          <Link href="#" className="hover:text-primary transition-colors">Cara Kerja</Link>
-          <Link href="#" className="hover:text-primary transition-colors">Akomodasi</Link>
-          <Link href="#" className="hover:text-primary transition-colors">Tentang Kami</Link>
-        </div>
-        <Button variant="outline" className="border-secondary/20 text-secondary hover:bg-secondary/5 rounded-full px-8 hidden md:flex font-medium">
-          Login Admin
-        </Button>
+        <Link href="/planner" className="hidden md:block">
+          <Button variant="outline" className="border-secondary/20 text-secondary hover:bg-secondary/5 rounded-full px-8 font-medium">
+            Mulai Rencanakan
+          </Button>
+        </Link>
       </nav>
 
       {/* Hero Section (Clean & Spacious) */}
@@ -43,11 +40,6 @@ export default function LandingPage() {
             <Link href="/planner">
               <Button size="lg" className="bg-secondary text-white hover:bg-secondary/90 px-8 h-14 rounded-full text-base font-medium transition-transform hover:-translate-y-1 w-full sm:w-auto shadow-lg shadow-secondary/20">
                 Mulai Rencanakan <ArrowRight className="ml-3 w-4 h-4" />
-              </Button>
-            </Link>
-            <Link href="#">
-              <Button variant="ghost" size="lg" className="text-secondary hover:bg-secondary/5 px-8 h-14 rounded-full text-base font-medium w-full sm:w-auto">
-                Lihat Panduan Video
               </Button>
             </Link>
           </div>
