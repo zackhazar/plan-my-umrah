@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -127,22 +128,40 @@ export function Step6Transport() {
       <div className="bg-accent/60 rounded-2xl border border-secondary/10 p-6 space-y-5">
         {tab === 'car' && (
           <>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-secondary/80 mb-2 block">Rute</label>
-                <select className={selectClass} value={carRouteId} onChange={(e) => setCarRouteId(e.target.value)}>
-                  {CAR_ROUTES.map((r) => (
-                    <option key={r.id} value={r.id}>{r.route}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-secondary/80 mb-2 block">Kendaraan</label>
-                <select className={selectClass} value={carVehicleId} onChange={(e) => setCarVehicleId(e.target.value as typeof carVehicleId)}>
-                  {CAR_VEHICLES.map((v) => (
-                    <option key={v.id} value={v.id}>{v.name} — {v.seats} seat ({carRoute.prices[v.id]} SAR)</option>
-                  ))}
-                </select>
+            <div>
+              <label className="text-sm font-medium text-secondary/80 mb-2 block">Rute</label>
+              <select className={selectClass} value={carRouteId} onChange={(e) => setCarRouteId(e.target.value)}>
+                {CAR_ROUTES.map((r) => (
+                  <option key={r.id} value={r.id}>{r.route}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-secondary/80 mb-2 block">Kendaraan</label>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {CAR_VEHICLES.map((v) => {
+                  const active = v.id === carVehicleId;
+                  return (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => setCarVehicleId(v.id)}
+                      className={`text-left rounded-2xl border overflow-hidden transition-all ${active ? 'border-primary bg-primary/10 shadow-lg shadow-primary/10' : 'border-secondary/10 bg-white hover:border-primary/40'}`}
+                    >
+                      <div className={`relative w-full aspect-[4/3] flex items-center justify-center ${active ? 'bg-primary/10' : 'bg-accent'}`}>
+                        {v.image ? (
+                          <Image src={v.image} alt={v.name} fill className="object-cover" sizes="200px" />
+                        ) : (
+                          <Car className={`w-8 h-8 ${active ? 'text-primary' : 'text-secondary/40'}`} />
+                        )}
+                      </div>
+                      <div className="p-3">
+                        <div className="text-sm font-bold text-secondary leading-tight">{v.name}</div>
+                        <div className="text-[11px] text-muted-foreground mt-1">{v.seats} seat &middot; {carRoute.prices[v.id]} SAR</div>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

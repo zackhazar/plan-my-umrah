@@ -2,10 +2,11 @@
 
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
-import { Receipt, Check, ChevronLeft, MessageCircle, Building2, Bus, FileCheck2, UserCheck, PlaneTakeoff, PlaneLanding } from 'lucide-react';
+import { Receipt, Check, ChevronLeft, MessageCircle, Lightbulb } from 'lucide-react';
 import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
-import { WHATSAPP_NUMBER, SITE_NAME, SAUDI_AIRPORTS } from '@/config/pricing';
+import { WHATSAPP_NUMBER, SITE_NAME } from '@/config/pricing';
+import { generateItinerary, ITINERARY_TIPS } from '@/features/planner/itinerary';
 import type { TransportSelection } from '@/types/planner.types';
 
 const rp = (n: number) => `Rp ${n.toLocaleString('id-ID')}`;
@@ -30,7 +31,6 @@ export function Step9Summary() {
   const grandTotal = flightTotal + makkahTotal + madinahTotal + transportTotal + visaTotal + optionalTotal;
 
   const fmtDate = (d: Date | null) => (d ? format(d, 'd MMMM yyyy', { locale: localeId }) : '-');
-  const airportLabel = (code: string) => SAUDI_AIRPORTS.find((a) => a.code === code)?.label || code;
 
   const whatsAppMessage = [
     `Assalamu'alaikum, saya membuat estimasi Umrah mandiri via ${SITE_NAME}:`,
@@ -48,6 +48,7 @@ export function Step9Summary() {
       : null,
     '',
     `💰 *Grand Total Estimasi: ${rp(grandTotal)}*`,
+    `👤 *Per Jemaah (${totalPax} pax): ${rp(totalPax > 0 ? Math.round(grandTotal / totalPax) : 0)}*`,
     '',
     'Mohon dibantu penawaran resminya. Terima kasih. 🙏',
   ]
@@ -56,42 +57,28 @@ export function Step9Summary() {
 
   const whatsAppUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMessage)}`;
 
-  // Lampiran itinerary (template kronologis)
-  const itinerary: { icon: React.ElementType; title: string; detail: string }[] = [
-    {
-      icon: PlaneTakeoff,
-      title: `Berangkat — ${fmtDate(dates.departure)}`,
-      detail: `Penerbangan ${flight.departureAirport || '-'} → ${airportLabel(flight.arrivalAirport)}`,
-    },
-    ...(hotelMakkah?.name
-      ? [{
-          icon: Building2,
-          title: `Makkah — ${hotelMakkah.name}`,
-          detail: `Check-in ${fmtDate(hotelMakkah.checkIn)} · Check-out ${fmtDate(hotelMakkah.checkOut)} (${hotelMakkah.nights} malam)`,
-        }]
-      : []),
-    ...(hotelMadinah?.name
-      ? [{
-          icon: Building2,
-          title: `Madinah — ${hotelMadinah.name}`,
-          detail: `Check-in ${fmtDate(hotelMadinah.checkIn)} · Check-out ${fmtDate(hotelMadinah.checkOut)} (${hotelMadinah.nights} malam)`,
-        }]
-      : []),
-    ...transport.map((t) => ({
-      icon: Bus,
-      title: t.route,
-      detail: `${t.vehicle}${t.unit === 'per_vehicle' ? ` × ${t.qty} unit` : t.unit === 'per_pax' ? ` · ${paxCount} pax` : ''}`,
-    })),
-    ...(visa
-      ? [{ icon: FileCheck2, title: visa.type, detail: `Tarif ${visa.tierLabel} + Siskopatuh${visa.brnApproval ? ' + Bantuan Approval Hotel (BRN)' : ''}` }]
-      : []),
-    ...optionals.map((o) => ({ icon: UserCheck, title: o.serviceName, detail: 'Layanan tambahan' })),
-    {
-      icon: PlaneLanding,
-      title: `Pulang — ${fmtDate(dates.return)}`,
-      detail: `Penerbangan ${airportLabel(flight.returnAirport)} → ${flight.departureAirport || 'Indonesia'}`,
-    },
+  // Itinerary harian D1..Dn — otomatis dari tanggal, urutan kota & hotel
+  const itineraryDays = generateItinerary({
+    departure: dates.departure,
+    returnDate: dates.return,
+    arrivalAirport: flight.arrivalAirport,
+    makkahNights: hotelMakkah?.nights || 0,
+    madinahNights: hotelMadinah?.nights || 0,
+    makkahHotel: hotelMakkah?.name,
+    madinahHotel: hotelMadinah?.name,
+  });
+
+  // Breakdown biaya + persentase (format Ringkasan Penawaran)
+  const breakdown = [
+    { label: `Tiket Pesawat (${paxCount} Pax)`, total: flightTotal },
+    { label: `Hotel Makkah (${hotelMakkah?.nights || 0} Malam)`, total: makkahTotal },
+    { label: `Hotel Madinah (${hotelMadinah?.nights || 0} Malam)`, total: madinahTotal },
+    { label: `Transportasi (${transport.length} Rute)`, total: transportTotal },
+    { label: `Visa + Siskopatuh (${totalPax} Pax)${visa?.brnApproval ? ' + BRN' : ''}`, total: visaTotal },
+    { label: 'Layanan Ekstra', total: optionalTotal },
   ];
+  const pct = (n: number) => (grandTotal > 0 ? `${Math.round((n / grandTotal) * 100)}%` : '—');
+  const perPax = totalPax > 0 ? Math.round(grandTotal / totalPax) : 0;
 
   return (
     <div className="space-y-8 animate-in fade-in zoom-in-95 duration-500">
@@ -103,29 +90,53 @@ export function Step9Summary() {
         <p className="text-muted-foreground text-sm">Berikut rincian perkiraan biaya &amp; itinerary Umrah Mandiri Anda.</p>
       </div>
 
-      {/* Lampiran Itinerary */}
+      {/* Itinerary Harian */}
       <div className="bg-accent/60 rounded-3xl border border-secondary/10 p-6">
-        <h3 className="text-xs font-bold text-primary uppercase tracking-widest mb-5">Lampiran Itinerary</h3>
+        <h3 className="text-xs font-bold text-primary uppercase tracking-widest mb-5">Itinerary Harian ({itineraryDays.length} Hari)</h3>
         <div className="space-y-0">
-          {itinerary.map((item, i) => {
-            const Icon = item.icon;
-            const last = i === itinerary.length - 1;
+          {itineraryDays.map((day, i) => {
+            const last = i === itineraryDays.length - 1;
             return (
-              <div key={`${item.title}-${i}`} className="flex gap-4">
+              <div key={day.day} className="flex gap-4">
                 <div className="flex flex-col items-center">
-                  <div className="p-2 rounded-full bg-primary/10 border border-primary/20 shrink-0">
-                    <Icon className="w-4 h-4 text-primary" />
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-xs font-mono font-bold border ${day.city === 'Perjalanan' ? 'bg-secondary text-primary border-secondary' : 'bg-primary/10 text-primary border-primary/20'}`}>
+                    D{day.day}
                   </div>
                   {!last && <div className="w-px flex-1 bg-primary/20 my-1" />}
                 </div>
-                <div className={`min-w-0 ${last ? '' : 'pb-5'}`}>
-                  <div className="text-sm font-semibold text-secondary">{item.title}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{item.detail}</div>
+                <div className={`min-w-0 flex-1 ${last ? '' : 'pb-6'}`}>
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                    <span className="text-sm font-bold text-secondary">{day.title}</span>
+                    <span className="text-[11px] text-muted-foreground font-mono">{fmtDate(day.date)}{day.city !== 'Perjalanan' ? ` · ${day.city}` : ''}</span>
+                  </div>
+                  <ul className="mt-2 space-y-1">
+                    {day.items.map((item) => (
+                      <li key={item} className="text-xs text-foreground/60 leading-relaxed flex gap-2">
+                        <span className="text-primary mt-0.5 shrink-0">&bull;</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             );
           })}
         </div>
+      </div>
+
+      {/* Tips penting */}
+      <div className="bg-white rounded-3xl border border-secondary/10 p-6">
+        <h3 className="text-xs font-bold text-primary uppercase tracking-widest mb-4 flex items-center gap-2">
+          <Lightbulb className="w-4 h-4" /> Tips Penting
+        </h3>
+        <ul className="space-y-2">
+          {ITINERARY_TIPS.map((tip) => (
+            <li key={tip} className="text-xs text-foreground/60 leading-relaxed flex gap-2">
+              <span className="text-primary mt-0.5 shrink-0">&bull;</span>
+              <span>{tip}</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* Rincian biaya */}
@@ -139,35 +150,24 @@ export function Step9Summary() {
         </div>
 
         <div className="p-6 space-y-4">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Tiket Pesawat ({paxCount} Pax)</span>
-            <span className="text-secondary font-mono">{rp(flightTotal)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Hotel Makkah ({hotelMakkah?.nights || 0} Malam)</span>
-            <span className="text-secondary font-mono">{rp(makkahTotal)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Hotel Madinah ({hotelMadinah?.nights || 0} Malam)</span>
-            <span className="text-secondary font-mono">{rp(madinahTotal)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Transportasi ({transport.length} Rute)</span>
-            <span className="text-secondary font-mono">{rp(transportTotal)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Visa + Siskopatuh ({totalPax} Pax){visa?.brnApproval ? ' + BRN' : ''}</span>
-            <span className="text-secondary font-mono">{rp(visaTotal)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Layanan Ekstra</span>
-            <span className="text-secondary font-mono">{rp(optionalTotal)}</span>
-          </div>
+          {breakdown.map((b) => (
+            <div key={b.label} className="flex justify-between items-center gap-3 text-sm">
+              <span className="text-muted-foreground min-w-0">{b.label}</span>
+              <span className="flex items-center gap-3 shrink-0">
+                <span className="text-[10px] font-mono text-muted-foreground/70 w-8 text-right">{pct(b.total)}</span>
+                <span className="text-secondary font-mono">{rp(b.total)}</span>
+              </span>
+            </div>
+          ))}
 
-          <div className="pt-6 border-t border-secondary/10 flex justify-between items-end">
+          <div className="pt-6 border-t border-secondary/10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
             <div>
               <div className="text-xs text-primary font-bold uppercase tracking-widest mb-1">Grand Total Estimasi</div>
               <div className="text-3xl font-mono font-bold text-primary">{rp(grandTotal)}</div>
+            </div>
+            <div className="text-left sm:text-right">
+              <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Per Jemaah ({totalPax} pax)</div>
+              <div className="text-lg font-mono font-bold text-secondary">{rp(perPax)}</div>
             </div>
           </div>
         </div>
