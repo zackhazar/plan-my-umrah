@@ -19,13 +19,13 @@ export function Step4HotelMakkah() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h2 className="text-3xl font-serif font-bold text-white mb-2 tracking-wide">Akomodasi Makkah</h2>
+        <h2 className="text-3xl font-heading font-bold text-white mb-2 tracking-wide">Akomodasi Makkah</h2>
         <p className="text-white/50 text-sm">Pilih hotel pilihan Anda di Makkah. Harga bervariasi berdasarkan jarak ke Masjidil Haram dan fasilitas.</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Durasi Menginap */}
-        <div className="bg-[#121212] p-5 rounded-2xl border border-white/5 flex flex-col justify-center">
+        <div className="bg-white/[0.035] p-5 rounded-2xl border border-white/5 flex flex-col justify-center">
           <label className="text-sm font-medium text-white/70 mb-4 block">Durasi Menginap (Malam)</label>
           <div className="flex items-center gap-4">
             <Button 
@@ -47,7 +47,7 @@ export function Step4HotelMakkah() {
         </div>
 
         {/* Input Manual Jika Punya Pilihan Sendiri */}
-        <div className="bg-[#121212] p-5 rounded-2xl border border-white/5">
+        <div className="bg-white/[0.035] p-5 rounded-2xl border border-white/5">
           <label className="text-sm font-medium text-white/70 mb-4 block">Harga Kustom (Per Malam)</label>
           <div className="relative">
              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-medium">Rp</span>
@@ -61,7 +61,7 @@ export function Step4HotelMakkah() {
                 stars: 0, 
                 pricePerNight: Number(e.target.value) 
               })}
-              className="bg-black/50 border-white/10 text-white h-12 rounded-xl pl-12 focus-visible:ring-primary"
+              className="bg-black/30 border-white/10 text-white h-12 rounded-xl pl-12 focus-visible:ring-primary"
             />
           </div>
           <p className="text-xs text-white/30 mt-2">Kosongkan jika memilih dari daftar di bawah.</p>
@@ -84,11 +84,11 @@ export function Step4HotelMakkah() {
                   stars: hotel.stars, 
                   pricePerNight: hotel.pricePerNight 
                 })}
-                className={`p-5 rounded-2xl border cursor-pointer transition-all duration-300 ${isSelected ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(214,175,55,0.15)]' : 'bg-[#121212] border-white/5 hover:border-white/20 hover:bg-[#1a1a1a]'}`}
+                className={`p-5 rounded-2xl border cursor-pointer transition-all duration-300 ${isSelected ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(214,175,55,0.15)]' : 'bg-white/[0.035] border-white/5 hover:border-white/20 hover:bg-white/[0.07]'}`}
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-start gap-4">
-                    <div className={`p-3 rounded-xl border ${isSelected ? 'bg-primary/20 border-primary/30' : 'bg-black/40 border-white/10'}`}>
+                    <div className={`p-3 rounded-xl border ${isSelected ? 'bg-primary/20 border-primary/30' : 'bg-black/30 border-white/10'}`}>
                       <Building2 className={`w-5 h-5 ${isSelected ? 'text-primary' : 'text-white/60'}`} />
                     </div>
                     <div>

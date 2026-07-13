@@ -4,64 +4,63 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Tema Clean & Elegant: Off-white background */
-  --background: #FAFAFA;
-  --foreground: #1A1A1A;
+  /* Tema terang: ivory hangat + emas + zamrud (landing page) */
+  --background: #FBFAF7;
+  --foreground: #17211E;
 
-  /* Kotak Form/Card: Putih bersih dengan bayangan lembut */
   --card: #FFFFFF;
-  --card-foreground: #1A1A1A;
+  --card-foreground: #17211E;
   --popover: #FFFFFF;
-  --popover-foreground: #1A1A1A;
+  --popover-foreground: #17211E;
 
-  /* Aksen Utama: Emas Champagne (Tidak terlalu mencolok) */
-  --primary: #C5A880;
+  /* Emas kaya — aksen utama */
+  --primary: #B9924F;
   --primary-foreground: #FFFFFF;
-  --primary-hover: #B0926A;
+  --primary-hover: #A67F3E;
 
-  /* Aksen Sekunder: Hijau Zamrud Gelap (Elegan ala Timur Tengah) */
-  --secondary: #1C2F2D;
-  --secondary-foreground: #FFFFFF;
+  /* Zamrud gelap — warna brand */
+  --secondary: #12332E;
+  --secondary-foreground: #F6F1E7;
 
-  --muted: #F0F0EE;
-  --muted-foreground: #6B6B6B;
-  --accent: #F5EFE6;
-  --accent-foreground: #1A1A1A;
+  --muted: #F1EDE4;
+  --muted-foreground: #6E6A5E;
+  --accent: #F6F1E7;
+  --accent-foreground: #17211E;
   --destructive: #B3261E;
 
-  --border: rgba(0, 0, 0, 0.08);
-  --input: rgba(0, 0, 0, 0.04);
-  --ring: #C5A880;
+  --border: rgba(23, 33, 30, 0.09);
+  --input: rgba(23, 33, 30, 0.05);
+  --ring: #B9924F;
 
   --radius: 1rem;
 }
 
-/* Tema gelap ter-scope untuk wizard planner (komponen step didesain dark) */
+/* Tema gelap ter-scope untuk wizard planner: hitam-zamrud + emas */
 .theme-dark {
-  --background: #0B0B0B;
-  --foreground: #FFFFFF;
+  --background: #0B1210;
+  --foreground: #F5F2EA;
 
-  --card: rgba(20, 20, 20, 0.85);
-  --card-foreground: #FFFFFF;
-  --popover: #141414;
-  --popover-foreground: #FFFFFF;
+  --card: rgba(255, 255, 255, 0.03);
+  --card-foreground: #F5F2EA;
+  --popover: #131C19;
+  --popover-foreground: #F5F2EA;
 
-  --primary: #D6AF37;
-  --primary-foreground: #000000;
+  --primary: #D4AF37;
+  --primary-foreground: #0B1210;
   --primary-hover: #E5C158;
 
-  --secondary: #1C2F2D;
-  --secondary-foreground: #FFFFFF;
+  --secondary: #143631;
+  --secondary-foreground: #F5F2EA;
 
   --muted: rgba(255, 255, 255, 0.06);
-  --muted-foreground: rgba(255, 255, 255, 0.5);
-  --accent: rgba(214, 175, 55, 0.1);
-  --accent-foreground: #D6AF37;
+  --muted-foreground: rgba(245, 242, 234, 0.5);
+  --accent: rgba(212, 175, 55, 0.12);
+  --accent-foreground: #D4AF37;
   --destructive: #FF6659;
 
   --border: rgba(255, 255, 255, 0.08);
   --input: rgba(255, 255, 255, 0.05);
-  --ring: #D6AF37;
+  --ring: #D4AF37;
 
   background-color: var(--background);
   color: var(--foreground);
@@ -100,6 +99,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Latar wizard planner: gradasi zamrud halus di atas hitam-hijau */
+.planner-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(20, 54, 49, 0.55), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 110%, rgba(212, 175, 55, 0.07), transparent 70%),
+    var(--background);
+}
+
+/* Scrollbar halus untuk area gelap */
+.theme-dark ::-webkit-scrollbar {
+  width: 10px;
+}
+.theme-dark ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.theme-dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+}
+
 /* Mode cetak: paksa tampilan terang agar ringkasan hemat tinta & terbaca */
 @media print {
   .theme-dark,
@@ -115,9 +134,9 @@ body {
 
 /* Utilitas tambahan untuk efek kaca pada tema terang */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(18, 51, 46, 0.08);
 }

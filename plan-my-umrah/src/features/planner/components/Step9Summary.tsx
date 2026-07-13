@@ -63,12 +63,12 @@ export function Step9Summary() {
         <div className="inline-flex p-3 bg-green-500/10 rounded-full mb-4 border border-green-500/20 print:hidden">
           <Check className="w-8 h-8 text-green-500" />
         </div>
-        <h2 className="text-3xl font-serif font-bold text-white mb-2 tracking-wide">Estimasi Selesai!</h2>
+        <h2 className="text-3xl font-heading font-bold text-white mb-2 tracking-wide">Estimasi Selesai!</h2>
         <p className="text-white/50 text-sm">Berikut rincian perkiraan biaya Umrah Mandiri Anda.</p>
       </div>
 
       {/* Rencana Perjalanan */}
-      <div className="bg-[#121212] rounded-3xl border border-white/5 p-6">
+      <div className="bg-white/[0.035] rounded-3xl border border-white/5 p-6">
         <h3 className="text-xs font-bold text-primary uppercase tracking-widest mb-4">Rencana Perjalanan</h3>
         <div className="grid sm:grid-cols-2 gap-3">
           {itinerary.map((item) => {
@@ -84,7 +84,7 @@ export function Step9Summary() {
         </div>
       </div>
 
-      <div className="bg-[#121212] rounded-3xl border border-white/5 overflow-hidden">
+      <div className="bg-white/[0.035] rounded-3xl border border-white/5 overflow-hidden">
         <div className="p-6 bg-primary/5 border-b border-white/5 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Receipt className="w-5 h-5 text-primary" />

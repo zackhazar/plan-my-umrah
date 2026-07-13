@@ -5,8 +5,8 @@
 // ============================================================
 
 // Nomor WhatsApp CS PT Hajar Aswad Barokah (format internasional tanpa +)
-// GANTI dengan nomor asli sebelum production!
-export const WHATSAPP_NUMBER = '6281234567890';
+// 082139881976 → 6282139881976
+export const WHATSAPP_NUMBER = '6282139881976';
 
 export const SITE_NAME = 'Plan My Umrah';
 export const COMPANY_NAME = 'PT Hajar Aswad Barokah';

@@ -14,7 +14,7 @@ export function Step2Dates() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h2 className="text-3xl font-serif font-bold text-white mb-2 tracking-wide">
+        <h2 className="text-3xl font-heading font-bold text-white mb-2 tracking-wide">
           Kapan Anda Berencana Berangkat?
         </h2>
         <p className="text-white/50 text-sm">
@@ -24,7 +24,7 @@ export function Step2Dates() {
 
       <div className="grid md:grid-cols-2 gap-8">
         {/* Kalender Keberangkatan */}
-        <div className="bg-[#121212] p-5 rounded-2xl border border-white/5 flex flex-col items-center">
+        <div className="bg-white/[0.035] p-5 rounded-2xl border border-white/5 flex flex-col items-center">
           <div className="flex items-center gap-3 w-full mb-4 pb-3 border-b border-white/5">
             <CalendarDays className="text-primary w-4 h-4" />
             <h3 className="text-sm font-medium text-white/80">Tanggal Keberangkatan</h3>
@@ -39,7 +39,7 @@ export function Step2Dates() {
         </div>
 
         {/* Kalender Kepulangan */}
-        <div className="bg-[#121212] p-5 rounded-2xl border border-white/5 flex flex-col items-center">
+        <div className="bg-white/[0.035] p-5 rounded-2xl border border-white/5 flex flex-col items-center">
           <div className="flex items-center gap-3 w-full mb-4 pb-3 border-b border-white/5">
             <CalendarDays className="text-primary w-4 h-4" />
             <h3 className="text-sm font-medium text-white/80">Tanggal Kepulangan</h3>

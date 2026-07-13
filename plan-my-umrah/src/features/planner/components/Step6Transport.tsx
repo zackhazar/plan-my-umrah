@@ -39,7 +39,7 @@ export function Step6Transport() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h2 className="text-3xl font-serif font-bold text-white mb-2 tracking-wide">Pilihan Transportasi</h2>
+        <h2 className="text-3xl font-heading font-bold text-white mb-2 tracking-wide">Pilihan Transportasi</h2>
         <p className="text-white/50 text-sm">Pilih moda transportasi selama di Tanah Suci. Harga dihitung per orang (Dewasa & Anak).</p>
       </div>
 
@@ -52,7 +52,7 @@ export function Step6Transport() {
             <div 
               key={index}
               onClick={() => handleSelect(pkg)}
-              className={`p-6 rounded-3xl border cursor-pointer transition-all duration-300 relative overflow-hidden group ${isSelected ? 'bg-primary/10 border-primary shadow-[0_0_20px_rgba(214,175,55,0.15)]' : 'bg-[#121212] border-white/5 hover:border-white/20 hover:bg-[#1a1a1a]'}`}
+              className={`p-6 rounded-3xl border cursor-pointer transition-all duration-300 relative overflow-hidden group ${isSelected ? 'bg-primary/10 border-primary shadow-[0_0_20px_rgba(214,175,55,0.15)]' : 'bg-white/[0.035] border-white/5 hover:border-white/20 hover:bg-white/[0.07]'}`}
             >
               {/* Ornamen Background saat dipilih */}
               {isSelected && (
@@ -63,7 +63,7 @@ export function Step6Transport() {
 
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
                 <div className="flex items-start gap-5">
-                  <div className={`p-4 rounded-2xl border transition-colors ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-black/40 border-white/10 text-white/60 group-hover:text-white/90'}`}>
+                  <div className={`p-4 rounded-2xl border transition-colors ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-black/30 border-white/10 text-white/60 group-hover:text-white/90'}`}>
                     <Icon className="w-7 h-7" />
                   </div>
                   <div>

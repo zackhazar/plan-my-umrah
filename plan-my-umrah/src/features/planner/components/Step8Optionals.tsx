@@ -23,7 +23,7 @@ export function Step8Optionals() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h2 className="text-3xl font-serif font-bold text-white mb-2 tracking-wide">Layanan Tambahan</h2>
+        <h2 className="text-3xl font-heading font-bold text-white mb-2 tracking-wide">Layanan Tambahan</h2>
         <p className="text-white/50 text-sm">Pilih layanan ekstra untuk menyempurnakan pengalaman ibadah Anda. (Opsional)</p>
       </div>
 
@@ -35,9 +35,9 @@ export function Step8Optionals() {
             <div 
               key={service.id}
               onClick={() => toggleOptional(service)}
-              className={`p-5 rounded-2xl border cursor-pointer transition-all duration-300 flex items-start gap-4 ${isSelected ? 'bg-primary/10 border-primary' : 'bg-[#121212] border-white/5 hover:border-white/10'}`}
+              className={`p-5 rounded-2xl border cursor-pointer transition-all duration-300 flex items-start gap-4 ${isSelected ? 'bg-primary/10 border-primary' : 'bg-white/[0.035] border-white/5 hover:border-white/10'}`}
             >
-              <div className={`p-3 rounded-xl border ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-black/40 border-white/10 text-white/40'}`}>
+              <div className={`p-3 rounded-xl border ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-black/30 border-white/10 text-white/40'}`}>
                 <Icon className="w-5 h-5" />
               </div>
               <div className="flex-1">

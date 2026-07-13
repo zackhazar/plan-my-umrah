@@ -16,7 +16,7 @@ export function Step7Visa() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h2 className="text-3xl font-serif font-bold text-white mb-2 tracking-wide">Visa & Dokumen</h2>
+        <h2 className="text-3xl font-heading font-bold text-white mb-2 tracking-wide">Visa & Dokumen</h2>
         <p className="text-white/50 text-sm">Pilih jenis visa. Biaya visa berlaku untuk semua jemaah termasuk bayi.</p>
       </div>
 
@@ -27,11 +27,11 @@ export function Step7Visa() {
             <div 
               key={index}
               onClick={() => updateVisa(pkg)}
-              className={`p-6 rounded-3xl border cursor-pointer transition-all duration-300 relative flex flex-col h-full ${isSelected ? 'bg-primary/10 border-primary shadow-[0_0_20px_rgba(214,175,55,0.15)]' : 'bg-[#121212] border-white/5 hover:border-white/20 hover:bg-[#1a1a1a]'}`}
+              className={`p-6 rounded-3xl border cursor-pointer transition-all duration-300 relative flex flex-col h-full ${isSelected ? 'bg-primary/10 border-primary shadow-[0_0_20px_rgba(214,175,55,0.15)]' : 'bg-white/[0.035] border-white/5 hover:border-white/20 hover:bg-white/[0.07]'}`}
             >
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-4">
-                  <div className={`p-3 rounded-2xl border ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-black/40 border-white/10 text-white/60'}`}>
+                  <div className={`p-3 rounded-2xl border ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-black/30 border-white/10 text-white/60'}`}>
                     <Globe className="w-6 h-6" />
                   </div>
                   {isSelected && <CheckCircle2 className="w-6 h-6 text-primary" />}

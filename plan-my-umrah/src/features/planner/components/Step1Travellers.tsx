@@ -22,7 +22,7 @@ export function Step1Travellers() {
     type: 'adults' | 'children' | 'infants',
     icon: React.ElementType
   }) => (
-    <div className="flex items-center justify-between p-6 bg-[#121212] rounded-2xl border border-white/5 hover:border-primary/20 transition-all duration-300">
+    <div className="flex items-center justify-between p-6 bg-white/[0.035] rounded-2xl border border-white/5 hover:border-primary/20 transition-all duration-300">
       <div className="flex items-center gap-4">
         <div className="p-3 bg-primary/10 rounded-xl border border-primary/20">
           <Icon className="w-5 h-5 text-primary" />
@@ -57,7 +57,7 @@ export function Step1Travellers() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h2 className="text-3xl font-serif font-bold text-white mb-2 tracking-wide">Siapa saja yang akan berangkat?</h2>
+        <h2 className="text-3xl font-heading font-bold text-white mb-2 tracking-wide">Siapa saja yang akan berangkat?</h2>
         <p className="text-white/50 text-sm">Tentukan jumlah jemaah dalam rombongan Anda untuk kalkulasi kapasitas hotel dan transportasi yang akurat.</p>
       </div>
 

@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
+import { Sparkles } from 'lucide-react';
 import { Step1Travellers } from '@/features/planner/components/Step1Travellers';
 import { Step2Dates } from '@/features/planner/components/Step2Dates';
 import { Step3Flights } from '@/features/planner/components/Step3Flights';
@@ -11,6 +13,18 @@ import { Step6Transport } from '@/features/planner/components/Step6Transport';
 import { Step7Visa } from '@/features/planner/components/Step7Visa';
 import { Step8Optionals } from '@/features/planner/components/Step8Optionals';
 import { Step9Summary } from '@/features/planner/components/Step9Summary';
+
+const STEP_LABELS = [
+  'Jemaah',
+  'Tanggal',
+  'Pesawat',
+  'Makkah',
+  'Madinah',
+  'Transport',
+  'Visa',
+  'Ekstra',
+  'Ringkasan',
+];
 
 export default function PlannerWizard() {
   const storeStep = usePlannerStore((state) => state.step);
@@ -40,29 +54,59 @@ export default function PlannerWizard() {
   }, [step]);
 
   return (
-    <div className="theme-dark min-h-screen relative flex flex-col antialiased overflow-hidden bg-background text-foreground">
-      <div className="print:hidden fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] pointer-events-none opacity-40 mix-blend-screen" />
-      <div className="print:hidden fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] pointer-events-none opacity-30 mix-blend-screen" />
+    <div className="theme-dark planner-bg min-h-screen relative flex flex-col antialiased text-foreground">
 
-      <header className="print:hidden h-20 border-b border-primary/20 flex items-center px-4 md:px-8 sticky top-0 bg-background/60 backdrop-blur-xl z-40">
-        <div className="font-heading text-lg md:text-2xl font-bold bg-gradient-to-r from-white via-primary to-primary bg-clip-text text-transparent tracking-widest mr-4 md:mr-12 shrink-0">
-          PLAN MY UMRAH
-        </div>
-        <div className="flex-1 max-w-2xl mx-auto flex items-center gap-6">
-          <span className="text-xs font-mono text-primary/80 uppercase tracking-widest w-28 font-medium">
-            Tahap {step} / {totalSteps}
-          </span>
-          <div className="relative h-1.5 flex-1 bg-white/5 rounded-full overflow-hidden border border-white/5">
-            <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary/50 to-primary transition-all duration-700 ease-out shadow-[0_0_10px_#E5C158]" style={{ width: `${progress}%` }} />
+      <header className="print:hidden sticky top-0 z-40 border-b border-white/6 bg-background/70 backdrop-blur-xl">
+        <div className="container max-w-5xl mx-auto px-4 md:px-6 h-16 flex items-center gap-4 md:gap-8">
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center border border-white/10 transition-colors group-hover:border-primary/40">
+              <Sparkles className="w-4 h-4 text-primary" />
+            </div>
+            <span className="font-heading text-base md:text-lg font-bold tracking-[0.18em] text-foreground hidden sm:block">
+              PLAN MY UMRAH
+            </span>
+          </Link>
+
+          <div className="flex-1 flex items-center gap-4">
+            <div className="relative h-1.5 flex-1 bg-white/6 rounded-full overflow-hidden">
+              <div
+                className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary/60 to-primary transition-all duration-700 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <span className="text-[11px] font-mono text-primary/90 uppercase tracking-[0.18em] font-medium shrink-0">
+              {step}/{totalSteps} &middot; {STEP_LABELS[step - 1]}
+            </span>
           </div>
+        </div>
+
+        {/* Step dots (desktop) */}
+        <div className="hidden lg:flex container max-w-5xl mx-auto px-6 pb-3 -mt-1 items-center gap-1.5">
+          {STEP_LABELS.map((label, i) => {
+            const n = i + 1;
+            const done = n < step;
+            const active = n === step;
+            return (
+              <div key={label} className="flex-1 flex items-center gap-1.5">
+                <div className={`h-1 flex-1 rounded-full transition-colors duration-500 ${done || active ? 'bg-primary/70' : 'bg-white/8'}`} />
+                <span className={`text-[9px] uppercase tracking-wider transition-colors duration-500 ${active ? 'text-primary' : done ? 'text-foreground/50' : 'text-foreground/25'}`}>
+                  {label}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </header>
 
-      <main className="flex-1 container max-w-4xl mx-auto py-16 px-6 flex flex-col justify-center relative z-10">
-        <div className="bg-card border border-border rounded-[2.5rem] p-8 md:p-14 shadow-2xl backdrop-blur-2xl relative min-h-[500px] ring-1 ring-white/10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-[1px] bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+      <main className="flex-1 container max-w-4xl mx-auto py-10 md:py-14 px-4 md:px-6 relative z-10">
+        <div className="bg-card border border-white/8 rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-12 shadow-2xl shadow-black/40 backdrop-blur-2xl relative min-h-[520px]">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-[1px] bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
           {mounted ? CurrentStep : null}
         </div>
+
+        <p className="print:hidden text-center text-[11px] text-foreground/30 mt-6 tracking-wide">
+          Estimasi tersimpan otomatis di perangkat Anda &mdash; tutup dan lanjutkan kapan saja.
+        </p>
       </main>
     </div>
   );

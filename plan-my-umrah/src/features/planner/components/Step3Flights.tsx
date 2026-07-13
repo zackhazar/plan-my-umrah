@@ -17,7 +17,7 @@ export function Step3Flights() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h2 className="text-3xl font-serif font-bold text-white mb-2 tracking-wide">Estimasi Tiket Pesawat</h2>
+        <h2 className="text-3xl font-heading font-bold text-white mb-2 tracking-wide">Estimasi Tiket Pesawat</h2>
         <p className="text-white/50 text-sm">Masukkan detail penerbangan Anda. Kami menggunakan ini untuk memastikan total estimasi (Grand Total) Anda akurat.</p>
       </div>
 
@@ -32,7 +32,7 @@ export function Step3Flights() {
               placeholder="Cth: CGK (Jakarta)" 
               value={flight.departureAirport}
               onChange={(e) => updateFlight({ departureAirport: e.target.value })}
-              className="bg-[#121212] border-white/10 text-white h-12 rounded-xl focus-visible:ring-primary"
+              className="bg-white/[0.035] border-white/10 text-white h-12 rounded-xl focus-visible:ring-primary"
             />
           </div>
 
@@ -42,7 +42,7 @@ export function Step3Flights() {
               <PlaneLanding className="w-4 h-4 text-primary" /> Bandara Tujuan
             </label>
             <select 
-              className="w-full bg-[#121212] border border-white/10 text-white h-12 rounded-xl px-4 focus-visible:ring-primary outline-none"
+              className="w-full bg-white/[0.035] border border-white/10 text-white h-12 rounded-xl px-4 focus-visible:ring-primary outline-none"
               value={flight.arrivalAirport}
               onChange={(e) => updateFlight({ arrivalAirport: e.target.value })}
             >
@@ -54,7 +54,7 @@ export function Step3Flights() {
         </div>
 
         {/* Harga Tiket */}
-        <div className="bg-[#121212] p-6 rounded-2xl border border-white/5 mt-8">
+        <div className="bg-white/[0.035] p-6 rounded-2xl border border-white/5 mt-8">
           <label className="text-sm font-medium text-white/70 block mb-4">Estimasi Harga Tiket (Pulang-Pergi) per Orang</label>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-medium">Rp</span>
@@ -63,7 +63,7 @@ export function Step3Flights() {
               placeholder="0"
               value={flight.estimatedPricePerPerson || ''}
               onChange={(e) => updateFlight({ estimatedPricePerPerson: Number(e.target.value), isManualOverride: true })}
-              className="bg-black/50 border-white/10 text-white h-14 rounded-xl pl-12 text-lg focus-visible:ring-primary"
+              className="bg-black/30 border-white/10 text-white h-14 rounded-xl pl-12 text-lg focus-visible:ring-primary"
             />
           </div>
           
