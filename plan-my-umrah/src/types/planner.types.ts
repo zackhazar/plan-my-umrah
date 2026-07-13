@@ -5,7 +5,8 @@ export interface HotelSelection {
   checkIn: Date | null;
   checkOut: Date | null;
   nights: number; // dihitung dari checkIn–checkOut (fallback manual)
-  pricePerNight: number;
+  rooms: number; // jumlah kamar (harga hotel = per malam × malam × kamar)
+  pricePerNight: number; // per kamar per malam
 }
 
 export type TransportMode = 'car' | 'train' | 'bus' | 'custom';
@@ -53,6 +54,7 @@ export interface PlannerState {
     departureAirport: string; // bandara asal (Indonesia)
     arrivalAirport: string; // bandara tiba di Saudi (JED/MED)
     returnAirport: string; // bandara kepulangan dari Saudi (JED/MED)
+    returnDifferent: boolean; // true = pulang dari bandara berbeda (buka dropdown terpisah)
     estimatedPricePerPerson: number;
     isManualOverride: boolean;
   };

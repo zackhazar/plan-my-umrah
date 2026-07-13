@@ -40,22 +40,23 @@ export interface HotelOption {
   image?: string;
 }
 
-// PENTING: pricePerNight & distance di bawah = REFERENSI KASAR — mohon
-// disesuaikan dengan price list terbaru (angka dari Excel hanya Dar Attauhid & Sofitel).
+// PENTING: pricePerNight = harga REFERENSI PER KAMAR PER MALAM (musim normal),
+// dalam Rupiah. Angka ini estimasi pasar — WAJIB disesuaikan dengan price list
+// resmi terbaru Hajar Aswad Barokah. Jemaah juga bisa override via input manual.
 export const MAKKAH_HOTELS: HotelOption[] = [
-  { id: 'm1', name: 'Fairmont Makkah Clock Royal', stars: 5, distance: 50, pricePerNight: 3500000, image: '/images/hotels/fairmont-makkah.jpg' },
-  { id: 'm2', name: 'Address Jabal Omar Makkah', stars: 5, distance: 300, pricePerNight: 3200000, image: '/images/hotels/address-jabal-omar.jpg' },
-  { id: 'm3', name: 'InterContinental Dar Attauhid', stars: 5, distance: 100, pricePerNight: 2800000, image: '/images/hotels/dar-attauhid.jpg' },
-  { id: 'm4', name: 'Al Marwa Rayhaan by Rotana', stars: 5, distance: 100, pricePerNight: 2400000, image: '/images/hotels/marwa-rotana.jpg' },
+  { id: 'm1', name: 'Fairmont Makkah Clock Royal', stars: 5, distance: 50, pricePerNight: 5000000, image: '/images/hotels/fairmont-makkah.jpg' },
+  { id: 'm2', name: 'Address Jabal Omar Makkah', stars: 5, distance: 300, pricePerNight: 4000000, image: '/images/hotels/address-jabal-omar.jpg' },
+  { id: 'm3', name: 'InterContinental Dar Attauhid', stars: 5, distance: 100, pricePerNight: 3500000, image: '/images/hotels/dar-attauhid.jpg' },
+  { id: 'm4', name: 'Al Marwa Rayhaan by Rotana', stars: 5, distance: 100, pricePerNight: 3000000, image: '/images/hotels/marwa-rotana.jpg' },
   { id: 'm5', name: 'Makarim Ajyad Makkah', stars: 4, distance: 600, pricePerNight: 1300000, image: '/images/hotels/makarim-ajyad.jpg' },
-  { id: 'm6', name: 'Time Ruba Hotel & Suites', stars: 4, distance: 700, pricePerNight: 1000000, image: '/images/hotels/time-ruba.jpg' },
+  { id: 'm6', name: 'Time Ruba Hotel & Suites', stars: 4, distance: 700, pricePerNight: 950000, image: '/images/hotels/time-ruba.jpg' },
 ];
 
 export const MADINAH_HOTELS: HotelOption[] = [
-  { id: 'md1', name: 'Sofitel Shahd Al Madinah', stars: 5, distance: 200, pricePerNight: 4000000, image: '/images/hotels/sofitel-madinah.jpg' },
-  { id: 'md2', name: 'Hilton Madinah', stars: 5, distance: 100, pricePerNight: 2500000, image: '/images/hotels/hilton-madinah.jpg' },
-  { id: 'md3', name: 'Al Aqeeq Hotel Madinah', stars: 4, distance: 50, pricePerNight: 1600000, image: '/images/hotels/al-aqeeq-madinah.jpg' },
-  { id: 'md4', name: 'Durrat Al Eiman', stars: 4, distance: 150, pricePerNight: 1400000, image: '/images/hotels/durrat-al-eiman.jpg' },
+  { id: 'md1', name: 'Sofitel Shahd Al Madinah', stars: 5, distance: 200, pricePerNight: 3500000, image: '/images/hotels/sofitel-madinah.jpg' },
+  { id: 'md2', name: 'Hilton Madinah', stars: 5, distance: 100, pricePerNight: 2800000, image: '/images/hotels/hilton-madinah.jpg' },
+  { id: 'md3', name: 'Al Aqeeq Hotel Madinah', stars: 4, distance: 50, pricePerNight: 1400000, image: '/images/hotels/al-aqeeq-madinah.jpg' },
+  { id: 'md4', name: 'Durrat Al Eiman', stars: 4, distance: 150, pricePerNight: 1100000, image: '/images/hotels/durrat-al-eiman.jpg' },
 ];
 
 // ============================================================
@@ -124,8 +125,8 @@ export const TRAIN_ROUTES: TrainRoute[] = [
 export const BUS_FULL_TRIP = {
   id: 'bus-full',
   label: 'Bus Full Trip (Bandara – Makkah – Madinah – Bandara)',
-  priceSar: 2400,
-  price: sarToIdr(2400), // Rp 11.520.000
+  priceSar: 2500,
+  price: sarToIdr(2500), // Rp 12.000.000
 };
 
 // ============================================================

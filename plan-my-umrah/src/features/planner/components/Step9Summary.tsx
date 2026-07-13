@@ -22,8 +22,10 @@ export function Step9Summary() {
     t.unit === 'per_vehicle' ? t.price * t.qty : t.unit === 'per_pax' ? t.price * paxCount : t.price;
 
   const flightTotal = (flight.estimatedPricePerPerson || 0) * paxCount;
-  const makkahTotal = (hotelMakkah?.pricePerNight || 0) * (hotelMakkah?.nights || 0);
-  const madinahTotal = (hotelMadinah?.pricePerNight || 0) * (hotelMadinah?.nights || 0);
+  const makkahRooms = hotelMakkah?.rooms || 1;
+  const madinahRooms = hotelMadinah?.rooms || 1;
+  const makkahTotal = (hotelMakkah?.pricePerNight || 0) * (hotelMakkah?.nights || 0) * makkahRooms;
+  const madinahTotal = (hotelMadinah?.pricePerNight || 0) * (hotelMadinah?.nights || 0) * madinahRooms;
   const transportTotal = transport.reduce((s, t) => s + legTotal(t), 0);
   const visaTotal = visa ? (visa.pricePerPax + visa.siskopatuhPerPax) * totalPax + visa.brnTotal : 0;
   const optionalTotal = optionals.reduce((sum, item) => sum + item.price, 0);
@@ -38,8 +40,8 @@ export function Step9Summary() {
     `👥 Jemaah: ${travellers.adults} Dewasa, ${travellers.children} Anak, ${travellers.infants} Bayi`,
     `📅 Berangkat: ${fmtDate(dates.departure)} — Pulang: ${fmtDate(dates.return)}`,
     `✈️ Tiket (${flight.departureAirport || '-'} → ${flight.arrivalAirport}, pulang via ${flight.returnAirport}): ${rp(flightTotal)} (${paxCount} pax)`,
-    `🕋 Hotel Makkah: ${hotelMakkah?.name || '-'} (${fmtDate(hotelMakkah?.checkIn ?? null)} – ${fmtDate(hotelMakkah?.checkOut ?? null)}, ${hotelMakkah?.nights || 0} malam) — ${rp(makkahTotal)}`,
-    `🕌 Hotel Madinah: ${hotelMadinah?.name || '-'} (${fmtDate(hotelMadinah?.checkIn ?? null)} – ${fmtDate(hotelMadinah?.checkOut ?? null)}, ${hotelMadinah?.nights || 0} malam) — ${rp(madinahTotal)}`,
+    `🕋 Hotel Makkah: ${hotelMakkah?.name || '-'} (${fmtDate(hotelMakkah?.checkIn ?? null)} – ${fmtDate(hotelMakkah?.checkOut ?? null)}, ${hotelMakkah?.nights || 0} malam × ${makkahRooms} kamar) — ${rp(makkahTotal)}`,
+    `🕌 Hotel Madinah: ${hotelMadinah?.name || '-'} (${fmtDate(hotelMadinah?.checkIn ?? null)} – ${fmtDate(hotelMadinah?.checkOut ?? null)}, ${hotelMadinah?.nights || 0} malam × ${madinahRooms} kamar) — ${rp(madinahTotal)}`,
     `🚌 Transportasi (${transport.length} rute):`,
     ...transport.map((t) => `   • ${t.route} — ${t.vehicle}${t.unit === 'per_vehicle' ? ` × ${t.qty} unit` : ''} — ${rp(legTotal(t))}`),
     `🛂 Visa: ${visa?.type || '-'} (${visa?.tierLabel || '-'})${visa?.brnApproval ? ' + Bantuan Approval Hotel BRN' : ''} — ${rp(visaTotal)}`,
@@ -71,8 +73,8 @@ export function Step9Summary() {
   // Breakdown biaya + persentase (format Ringkasan Penawaran)
   const breakdown = [
     { label: `Tiket Pesawat (${paxCount} Pax)`, total: flightTotal },
-    { label: `Hotel Makkah (${hotelMakkah?.nights || 0} Malam)`, total: makkahTotal },
-    { label: `Hotel Madinah (${hotelMadinah?.nights || 0} Malam)`, total: madinahTotal },
+    { label: `Hotel Makkah (${hotelMakkah?.nights || 0} malam × ${makkahRooms} kamar)`, total: makkahTotal },
+    { label: `Hotel Madinah (${hotelMadinah?.nights || 0} malam × ${madinahRooms} kamar)`, total: madinahTotal },
     { label: `Transportasi (${transport.length} Rute)`, total: transportTotal },
     { label: `Visa + Siskopatuh (${totalPax} Pax)${visa?.brnApproval ? ' + BRN' : ''}`, total: visaTotal },
     { label: 'Layanan Ekstra', total: optionalTotal },

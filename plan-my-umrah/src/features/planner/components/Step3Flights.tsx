@@ -27,11 +27,11 @@ export function Step3Flights() {
       </div>
 
       <div className="space-y-6">
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
           {/* Bandara asal (Indonesia) */}
           <div className="space-y-3">
             <label className="text-sm font-medium text-secondary/80 flex items-center gap-2">
-              <PlaneTakeoff className="w-4 h-4 text-primary" /> Bandara Asal
+              <PlaneTakeoff className="w-4 h-4 text-primary" /> Bandara Asal (Indonesia)
             </label>
             <Input
               placeholder="Cth: CGK (Jakarta)"
@@ -44,26 +44,57 @@ export function Step3Flights() {
           {/* Bandara tiba di Saudi */}
           <div className="space-y-3">
             <label className="text-sm font-medium text-secondary/80 flex items-center gap-2">
-              <PlaneLanding className="w-4 h-4 text-primary" /> Bandara Tujuan (Tiba)
+              <PlaneLanding className="w-4 h-4 text-primary" /> Bandara Tujuan (Tiba di Saudi)
             </label>
             <select
               className={selectClass}
               value={flight.arrivalAirport}
-              onChange={(e) => updateFlight({ arrivalAirport: e.target.value })}
+              onChange={(e) => {
+                const code = e.target.value;
+                // Jika pulang tidak dibedakan, samakan bandara kepulangan (PP)
+                updateFlight(flight.returnDifferent ? { arrivalAirport: code } : { arrivalAirport: code, returnAirport: code });
+              }}
             >
               {SAUDI_AIRPORTS.map((a) => (
                 <option key={a.code} value={a.code}>{a.label}</option>
               ))}
             </select>
           </div>
+        </div>
 
-          {/* Bandara kepulangan dari Saudi */}
-          <div className="space-y-3">
+        {/* Toggle: bandara pulang berbeda */}
+        <label className="flex items-start gap-3 cursor-pointer select-none bg-accent/60 border border-secondary/10 rounded-2xl px-5 py-4">
+          <input
+            type="checkbox"
+            checked={flight.returnDifferent}
+            onChange={(e) => {
+              const on = e.target.checked;
+              if (on) {
+                // default bandara pulang = bandara lain agar terlihat beda
+                const other = flight.arrivalAirport === 'JED' ? 'MED' : 'JED';
+                updateFlight({ returnDifferent: true, returnAirport: flight.returnAirport !== flight.arrivalAirport ? flight.returnAirport : other });
+              } else {
+                updateFlight({ returnDifferent: false, returnAirport: flight.arrivalAirport });
+              }
+            }}
+            className="mt-0.5 w-4 h-4 accent-[var(--primary)]"
+          />
+          <span>
+            <span className="text-sm font-medium text-secondary block">Pulang dari bandara yang berbeda?</span>
+            <span className="text-[11px] text-muted-foreground">
+              Centang jika kepulangan dari kota/bandara lain (mis. tiba di Jeddah, pulang dari Madinah). Jika tidak dicentang = pulang-pergi lewat bandara yang sama.
+            </span>
+          </span>
+        </label>
+
+        {/* Bandara kepulangan (hanya jika berbeda) */}
+        {flight.returnDifferent && (
+          <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
             <label className="text-sm font-medium text-secondary/80 flex items-center gap-2">
-              <Plane className="w-4 h-4 text-primary" /> Bandara Kepulangan
+              <Plane className="w-4 h-4 text-primary" /> Bandara Kepulangan (dari Saudi)
             </label>
             <select
-              className={selectClass}
+              className={`${selectClass} md:max-w-md`}
               value={flight.returnAirport}
               onChange={(e) => updateFlight({ returnAirport: e.target.value })}
             >
@@ -73,7 +104,7 @@ export function Step3Flights() {
             </select>
             <p className="text-[11px] text-muted-foreground">Dari bandara mana Anda terbang pulang ke Indonesia.</p>
           </div>
-        </div>
+        )}
 
         {/* Harga tiket */}
         <div className="bg-accent/60 p-6 rounded-2xl border border-secondary/10 mt-8">
