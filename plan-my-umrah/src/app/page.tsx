@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
@@ -81,6 +82,20 @@ export default function LandingPage() {
 
       {/* Hero */}
       <main className="relative overflow-hidden">
+        {/* Latar foto Ka'bah dengan overlay krem agar teks tetap terbaca */}
+        <div className="pointer-events-none absolute inset-0">
+          <Image
+            src="/images/kabbah/kabbah-1.jpg"
+            alt="Ka'bah, Masjidil Haram"
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/88 to-background/45" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
+        </div>
+
         <div className="pointer-events-none absolute -top-32 -right-32 w-[560px] h-[560px] rounded-full bg-primary/10 blur-[120px]" />
         <div className="pointer-events-none absolute top-40 -left-40 w-[420px] h-[420px] rounded-full bg-secondary/10 blur-[120px]" />
 
