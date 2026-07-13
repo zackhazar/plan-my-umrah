@@ -100,6 +100,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Mode cetak: paksa tampilan terang agar ringkasan hemat tinta & terbaca */
+@media print {
+  .theme-dark,
+  .theme-dark * {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #111111 !important;
+    border-color: #dddddd !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
 /* Utilitas tambahan untuk efek kaca pada tema terang */
 .glass-panel {
   background: rgba(255, 255, 255, 0.7);

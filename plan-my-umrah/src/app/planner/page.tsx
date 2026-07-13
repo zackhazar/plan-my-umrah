@@ -41,11 +41,11 @@ export default function PlannerWizard() {
 
   return (
     <div className="theme-dark min-h-screen relative flex flex-col antialiased overflow-hidden bg-background text-foreground">
-      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] pointer-events-none opacity-40 mix-blend-screen" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] pointer-events-none opacity-30 mix-blend-screen" />
+      <div className="print:hidden fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] pointer-events-none opacity-40 mix-blend-screen" />
+      <div className="print:hidden fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] pointer-events-none opacity-30 mix-blend-screen" />
 
-      <header className="h-20 border-b border-primary/20 flex items-center px-8 sticky top-0 bg-background/60 backdrop-blur-xl z-40">
-        <div className="font-heading text-2xl font-bold bg-gradient-to-r from-white via-primary to-primary bg-clip-text text-transparent tracking-widest mr-12">
+      <header className="print:hidden h-20 border-b border-primary/20 flex items-center px-4 md:px-8 sticky top-0 bg-background/60 backdrop-blur-xl z-40">
+        <div className="font-heading text-lg md:text-2xl font-bold bg-gradient-to-r from-white via-primary to-primary bg-clip-text text-transparent tracking-widest mr-4 md:mr-12 shrink-0">
           PLAN MY UMRAH
         </div>
         <div className="flex-1 max-w-2xl mx-auto flex items-center gap-6">
