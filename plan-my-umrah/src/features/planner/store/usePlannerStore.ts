@@ -6,7 +6,7 @@ const initialValues = {
   step: 1,
   travellers: { adults: 1, children: 0, infants: 0 },
   dates: { departure: null, return: null },
-  flight: { departureAirport: '', arrivalAirport: 'JED', estimatedPricePerPerson: 0, isManualOverride: false },
+  flight: { departureAirport: '', arrivalAirport: 'JED', returnAirport: 'MED', estimatedPricePerPerson: 0, isManualOverride: false },
   hotelMakkah: null,
   hotelMadinah: null,
   transport: [],
@@ -34,11 +34,11 @@ export const usePlannerStore = create<PlannerState>()(
       })),
 
       updateHotelMakkah: (data: Partial<PlannerState['hotelMakkah'] & {}>) => set((state) => ({
-        hotelMakkah: state.hotelMakkah ? { ...state.hotelMakkah, ...data } : { hotelId: '', name: '', stars: 0, nights: 1, pricePerNight: 0, ...data }
+        hotelMakkah: state.hotelMakkah ? { ...state.hotelMakkah, ...data } : { hotelId: '', name: '', stars: 0, checkIn: null, checkOut: null, nights: 1, pricePerNight: 0, ...data }
       })),
 
       updateHotelMadinah: (data: Partial<PlannerState['hotelMadinah'] & {}>) => set((state) => ({
-        hotelMadinah: state.hotelMadinah ? { ...state.hotelMadinah, ...data } : { hotelId: '', name: '', stars: 0, nights: 1, pricePerNight: 0, ...data }
+        hotelMadinah: state.hotelMadinah ? { ...state.hotelMadinah, ...data } : { hotelId: '', name: '', stars: 0, checkIn: null, checkOut: null, nights: 1, pricePerNight: 0, ...data }
       })),
 
       addTransport: (data: TransportSelection) => set((state) => ({
@@ -49,7 +49,7 @@ export const usePlannerStore = create<PlannerState>()(
         transport: state.transport.filter((t) => t.id !== id)
       })),
 
-      updateVisa: (data: VisaSelection) => set(() => ({
+      updateVisa: (data: VisaSelection | null) => set(() => ({
         visa: data
       })),
 
@@ -64,7 +64,7 @@ export const usePlannerStore = create<PlannerState>()(
       resetPlanner: () => set(initialValues),
     }),
     {
-      name: 'pmu-planner-storage',
+      name: 'pmu-planner-storage-v2', // v2: skema baru (check-in/out, transport multi-leg, visa tier)
       // reviver: kembalikan string ISO hasil JSON.stringify menjadi Date
       // (dibutuhkan agar dates.departure/return tetap Date setelah refresh)
       storage: createJSONStorage(() => localStorage, {

@@ -2,28 +2,40 @@ export interface HotelSelection {
   hotelId: string;
   name: string;
   stars: number;
-  nights: number;
+  checkIn: Date | null;
+  checkOut: Date | null;
+  nights: number; // dihitung dari checkIn–checkOut (fallback manual)
   pricePerNight: number;
 }
 
+export type TransportMode = 'car' | 'train' | 'bus' | 'custom';
+export type TransportUnit = 'per_vehicle' | 'per_pax' | 'flat';
+
 export interface TransportSelection {
-  id: string;
+  id: string; // unik per leg
+  mode: TransportMode;
   route: string;
-  vehicle: string;
-  price: number;
+  vehicle: string; // nama kendaraan / kelas kereta / label kustom
+  price: number; // harga satuan (per kendaraan / per pax / flat) dalam Rupiah
+  unit: TransportUnit;
+  qty: number; // jumlah kendaraan (car) — untuk train/bus/custom = 1
 }
 
 export interface VisaSelection {
   type: string;
-  price: number;
-  includesSiskopatuh: boolean;
-  includesInsurance: boolean;
+  pricePerPax: number;
+  tierLabel: string;
+  siskopatuhPerPax: number;
+  brnApproval: boolean; // dibantu approval hotel BRN
+  brnIsRamadhan: boolean;
+  brnTotal: number; // total Rupiah bantuan approval (SAR x hari x pax x kurs)
 }
 
 export interface OptionalService {
   id: string;
   serviceName: string;
-  price: number;
+  price: number; // total Rupiah
+  days?: number;
 }
 
 export interface PlannerState {
@@ -38,8 +50,9 @@ export interface PlannerState {
     return: Date | null;
   };
   flight: {
-    departureAirport: string;
-    arrivalAirport: string;
+    departureAirport: string; // bandara asal (Indonesia)
+    arrivalAirport: string; // bandara tiba di Saudi (JED/MED)
+    returnAirport: string; // bandara kepulangan dari Saudi (JED/MED)
     estimatedPricePerPerson: number;
     isManualOverride: boolean;
   };
@@ -48,7 +61,7 @@ export interface PlannerState {
   transport: TransportSelection[];
   visa: VisaSelection | null;
   optionals: OptionalService[];
-  
+
   setStep: (step: number) => void;
   updateTravellers: (type: 'adults' | 'children' | 'infants', count: number) => void;
   updateDates: (departure: Date | null, returnDate: Date | null) => void;
@@ -57,7 +70,7 @@ export interface PlannerState {
   updateHotelMadinah: (data: Partial<HotelSelection>) => void;
   addTransport: (data: TransportSelection) => void;
   removeTransport: (id: string) => void;
-  updateVisa: (data: VisaSelection) => void;
+  updateVisa: (data: VisaSelection | null) => void;
   toggleOptional: (data: OptionalService) => void;
   resetPlanner: () => void;
 }
