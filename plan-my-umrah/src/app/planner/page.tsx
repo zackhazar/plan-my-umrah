@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Step1Travellers } from '@/features/planner/components/Step1Travellers';
 import { Step2Dates } from '@/features/planner/components/Step2Dates';
@@ -13,7 +13,14 @@ import { Step8Optionals } from '@/features/planner/components/Step8Optionals';
 import { Step9Summary } from '@/features/planner/components/Step9Summary';
 
 export default function PlannerWizard() {
-  const step = usePlannerStore((state) => state.step);
+  const storeStep = usePlannerStore((state) => state.step);
+
+  // Guard hidrasi: state ter-persist di localStorage bisa berbeda dari hasil SSR,
+  // jadi render konten wizard hanya setelah mount di client.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const step = mounted ? storeStep : 1;
   const totalSteps = 9;
   const progress = useMemo(() => (step / totalSteps) * 100, [step, totalSteps]);
 
@@ -54,7 +61,7 @@ export default function PlannerWizard() {
       <main className="flex-1 container max-w-4xl mx-auto py-16 px-6 flex flex-col justify-center relative z-10">
         <div className="bg-card border border-border rounded-[2.5rem] p-8 md:p-14 shadow-2xl backdrop-blur-2xl relative min-h-[500px] ring-1 ring-white/10">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-[1px] bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
-          {CurrentStep}
+          {mounted ? CurrentStep : null}
         </div>
       </main>
     </div>

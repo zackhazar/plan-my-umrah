@@ -65,10 +65,18 @@ export const usePlannerStore = create<PlannerState>()(
     }),
     {
       name: 'pmu-planner-storage',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ 
+      // reviver: kembalikan string ISO hasil JSON.stringify menjadi Date
+      // (dibutuhkan agar dates.departure/return tetap Date setelah refresh)
+      storage: createJSONStorage(() => localStorage, {
+        reviver: (_key, value) =>
+          typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)
+            ? new Date(value)
+            : value,
+      }),
+      partialize: (state) => ({
         step: state.step,
         travellers: state.travellers,
+        dates: state.dates,
         flight: state.flight,
         hotelMakkah: state.hotelMakkah,
         hotelMadinah: state.hotelMadinah,
