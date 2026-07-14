@@ -5,7 +5,7 @@ import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  UserCheck, ChevronLeft, ChevronRight, CheckCircle2,
+  UserCheck, ChevronLeft, ChevronRight, Check,
   Shirt, Wallet, Utensils, Signal, WashingMachine, Syringe, Plane, PiggyBank,
 } from 'lucide-react';
 import { differenceInCalendarDays } from 'date-fns';
@@ -17,7 +17,15 @@ const ICONS: Record<OptionalServiceDef['icon'], React.ElementType> = {
   Shirt, Wallet, Utensils, Signal, WashingMachine, Syringe, Plane, PiggyBank,
 };
 
-// ---- Kartu layanan opsional editable ----
+function Checkbox({ checked }: { checked: boolean }) {
+  return (
+    <span className={`w-5 h-5 rounded-md border shrink-0 flex items-center justify-center transition-colors ${checked ? 'bg-primary border-primary' : 'border-secondary/25 bg-white'}`}>
+      {checked && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
+    </span>
+  );
+}
+
+// ---- Baris ringkas: ikon + nama + checkbox. Detail harga muncul saat dicentang ----
 function OptionalCard({ def, paxCount, tripDays }: { def: OptionalServiceDef; paxCount: number; tripDays: number }) {
   const { optionals, toggleOptional } = usePlannerStore();
   const existing = optionals.find((o) => o.id === def.id);
@@ -31,7 +39,6 @@ function OptionalCard({ def, paxCount, tripDays }: { def: OptionalServiceDef; pa
   const total = unitPrice * qty;
 
   const commit = (price: number) => {
-    // hapus dulu jika ada, lalu tambah dengan harga terbaru
     if (existing) toggleOptional(existing);
     toggleOptional({ id: def.id, serviceName: def.name, price: price * qty, unitPrice: price });
   };
@@ -49,21 +56,27 @@ function OptionalCard({ def, paxCount, tripDays }: { def: OptionalServiceDef; pa
 
   return (
     <div
-      onClick={toggle}
-      className={`p-5 rounded-2xl border cursor-pointer transition-all duration-300 ${isSelected ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' : 'bg-white border-secondary/10 hover:border-primary/40 hover:bg-accent/40'}`}
+      className={`rounded-2xl border transition-all duration-300 overflow-hidden ${isSelected ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' : 'bg-white border-secondary/10 hover:border-primary/40 hover:bg-accent/40'}`}
     >
-      <div className="flex items-start gap-4">
-        <div className={`p-2.5 rounded-xl border shrink-0 ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-accent border-secondary/10 text-secondary/50'}`}>
-          <Icon className="w-5 h-5" />
+      {/* Baris ringkas — selalu terlihat */}
+      <div onClick={toggle} className="flex items-center gap-3 p-4 cursor-pointer select-none">
+        <Checkbox checked={isSelected} />
+        <div className={`p-2 rounded-lg border shrink-0 ${isSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-accent border-secondary/10 text-secondary/50'}`}>
+          <Icon className="w-4 h-4" />
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <h4 className="text-sm font-bold text-secondary">{def.name}</h4>
-            {isSelected && <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />}
-          </div>
-          <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">{def.desc}</p>
+        <span className="text-sm font-semibold text-secondary flex-1 min-w-0 truncate">{def.name}</span>
+        {isSelected ? (
+          <span className="text-sm font-mono font-bold text-primary whitespace-nowrap">{rp(total)}</span>
+        ) : (
+          <span className="text-[11px] text-muted-foreground whitespace-nowrap">{rp(def.defaultPrice)}{def.unit !== 'flat' ? '/unit' : ''}</span>
+        )}
+      </div>
 
-          <div className="mt-3 flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+      {/* Detail — hanya muncul saat dicentang */}
+      {isSelected && (
+        <div className="px-4 pb-4 pt-0 animate-in fade-in slide-in-from-top-1 duration-200" onClick={(e) => e.stopPropagation()}>
+          <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">{def.desc}</p>
+          <div className="flex items-center gap-3">
             <div className="relative flex-1 max-w-[180px]">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[11px] text-muted-foreground">Rp</span>
               <Input
@@ -74,12 +87,9 @@ function OptionalCard({ def, paxCount, tripDays }: { def: OptionalServiceDef; pa
               />
             </div>
             <span className="text-[11px] text-muted-foreground whitespace-nowrap">{qtyLabel}</span>
-            {isSelected && (
-              <span className="ml-auto text-sm font-mono font-bold text-primary whitespace-nowrap">{rp(total)}</span>
-            )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -121,26 +131,25 @@ export function Step8Optionals() {
         <p className="text-muted-foreground text-sm">Opsional — centang yang Anda butuhkan. Harga bisa Anda sesuaikan sendiri.</p>
       </div>
 
-      {/* Mutawwif */}
-      <div
-        onClick={toggleMut}
-        className={`p-6 rounded-3xl border cursor-pointer transition-all duration-300 ${isMutSelected ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' : 'bg-white border-secondary/10 hover:border-primary/40'}`}
-      >
-        <div className="flex items-start gap-4">
-          <div className={`p-3 rounded-xl border ${isMutSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-accent border-secondary/10 text-secondary/50'}`}>
-            <UserCheck className="w-6 h-6" />
+      {/* Mutawwif — baris ringkas, detail muncul saat dicentang */}
+      <div className={`rounded-2xl border transition-all duration-300 overflow-hidden ${isMutSelected ? 'bg-primary/10 border-primary shadow-lg shadow-primary/10' : 'bg-white border-secondary/10 hover:border-primary/40'}`}>
+        <div onClick={toggleMut} className="flex items-center gap-3 p-4 cursor-pointer select-none">
+          <Checkbox checked={isMutSelected} />
+          <div className={`p-2 rounded-lg border shrink-0 ${isMutSelected ? 'bg-primary/20 border-primary/30 text-primary' : 'bg-accent border-secondary/10 text-secondary/50'}`}>
+            <UserCheck className="w-4 h-4" />
           </div>
-          <div className="flex-1">
-            <div className="flex justify-between">
-              <h4 className="text-base font-bold text-secondary">{MUTAWWIF.serviceName}</h4>
-              {isMutSelected && <CheckCircle2 className="w-5 h-5 text-primary" />}
-            </div>
-            <p className="text-xs text-muted-foreground my-1.5 leading-relaxed">{MUTAWWIF.desc}</p>
-            <div className="text-sm font-mono text-primary font-bold">
-              {MUTAWWIF.priceSarPerDay} SAR/hari &asymp; {rp(MUTAWWIF.pricePerDay)}/hari
-              <span className="text-[10px] text-muted-foreground font-sans font-normal ml-2">(kurs Rp {SAR_RATE.toLocaleString('id-ID')})</span>
-            </div>
-            <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-4" onClick={(e) => e.stopPropagation()}>
+          <span className="text-sm font-semibold text-secondary flex-1 min-w-0 truncate">{MUTAWWIF.serviceName}</span>
+          {isMutSelected ? (
+            <span className="text-sm font-mono font-bold text-primary whitespace-nowrap">{rp(mutTotal)}</span>
+          ) : (
+            <span className="text-[11px] text-muted-foreground whitespace-nowrap">{MUTAWWIF.priceSarPerDay} SAR/hari</span>
+          )}
+        </div>
+
+        {isMutSelected && (
+          <div className="px-4 pb-4 pt-0 animate-in fade-in slide-in-from-top-1 duration-200" onClick={(e) => e.stopPropagation()}>
+            <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">{MUTAWWIF.desc}</p>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-3">
                 <span className="text-xs text-secondary/70">Durasi:</span>
                 <Button variant="outline" size="icon" className="w-8 h-8 rounded-lg border-secondary/15" onClick={() => changeDays(days - 1)}>-</Button>
@@ -148,19 +157,18 @@ export function Step8Optionals() {
                 <Button variant="outline" size="icon" className="w-8 h-8 rounded-lg border-secondary/15" onClick={() => changeDays(days + 1)}>+</Button>
                 <span className="text-xs text-secondary/70">hari</span>
               </div>
-              <div className="sm:ml-auto text-sm">
-                <span className="text-muted-foreground mr-2">Total:</span>
-                <span className="font-mono font-bold text-primary text-base">{rp(mutTotal)}</span>
-              </div>
+              <span className="text-[10px] text-muted-foreground sm:ml-auto">
+                &asymp; {rp(MUTAWWIF.pricePerDay)}/hari (kurs Rp {SAR_RATE.toLocaleString('id-ID')})
+              </span>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Biaya tambahan lain */}
+      {/* Biaya tambahan lain — daftar ringkas */}
       <div className="space-y-3">
         <h3 className="text-sm font-semibold text-secondary">Biaya Tambahan Lain</h3>
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="space-y-2">
           {OPTIONAL_SERVICES.map((def) => (
             <OptionalCard key={def.id} def={def} paxCount={paxCount} tripDays={tripDays} />
           ))}
