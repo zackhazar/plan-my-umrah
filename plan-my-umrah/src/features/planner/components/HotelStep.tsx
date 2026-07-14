@@ -35,6 +35,8 @@ export function HotelStep({
 
   const checkIn = selection?.checkIn ?? null;
   const checkOut = selection?.checkOut ?? null;
+  const rooms = selection?.rooms ?? 1;
+  const setRooms = (n: number) => update({ rooms: Math.max(1, n) });
 
   const nights =
     checkIn && checkOut
@@ -62,7 +64,7 @@ export function HotelStep({
       </div>
 
       {/* Check-in / Check-out */}
-      <div className="grid sm:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 gap-4">
         <div className="bg-accent/60 p-5 rounded-2xl border border-secondary/10">
           <label className="text-sm font-medium text-secondary/80 mb-3 block">Check-in</label>
           <Input
@@ -82,9 +84,26 @@ export function HotelStep({
             className="bg-white border-secondary/15 text-secondary h-12 rounded-xl"
           />
         </div>
-        <div className="bg-secondary text-secondary-foreground p-5 rounded-2xl flex flex-col justify-center items-center">
-          <div className="text-3xl font-mono font-bold text-primary">{nights}</div>
-          <div className="text-xs opacity-80 mt-1">Malam</div>
+      </div>
+
+      {/* Malam & Jumlah Kamar */}
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div className="bg-secondary text-secondary-foreground p-5 rounded-2xl flex items-center justify-between">
+          <div>
+            <div className="text-xs opacity-80">Durasi Menginap</div>
+            <div className="text-2xl font-mono font-bold text-primary">{nights} <span className="text-sm font-sans font-normal opacity-80">malam</span></div>
+          </div>
+        </div>
+        <div className="bg-accent/60 p-5 rounded-2xl border border-secondary/10 flex items-center justify-between">
+          <div>
+            <label className="text-sm font-medium text-secondary/80 block">Jumlah Kamar</label>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Harga dihitung per kamar</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="icon" className="border-secondary/15 hover:bg-accent text-secondary rounded-xl w-9 h-9" onClick={() => setRooms(rooms - 1)}>-</Button>
+            <span className="w-6 text-center text-lg font-mono font-bold text-primary">{rooms}</span>
+            <Button variant="outline" size="icon" className="border-secondary/15 hover:bg-accent text-secondary rounded-xl w-9 h-9" onClick={() => setRooms(rooms + 1)}>+</Button>
+          </div>
         </div>
       </div>
 
@@ -158,9 +177,9 @@ export function HotelStep({
 
       {selection?.pricePerNight ? (
         <div className="mt-4 text-sm flex justify-between items-center bg-primary/10 px-5 py-4 rounded-xl border border-primary/20">
-          <span className="text-secondary/80">Total Hotel {city} ({nights} Malam):</span>
+          <span className="text-secondary/80">Total Hotel {city} ({nights} malam × {rooms} kamar):</span>
           <span className="font-bold font-mono text-primary text-lg">
-            Rp {(selection.pricePerNight * nights).toLocaleString('id-ID')}
+            Rp {(selection.pricePerNight * nights * rooms).toLocaleString('id-ID')}
           </span>
         </div>
       ) : null}

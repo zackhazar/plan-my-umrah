@@ -94,8 +94,9 @@ export default function PlannerWizard() {
       </header>
 
       <main className="flex-1 container max-w-4xl mx-auto py-10 md:py-14 px-4 md:px-6 relative z-10">
-        <div className="bg-white border border-secondary/10 rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-12 shadow-xl shadow-secondary/5 relative min-h-[520px]">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-[1px] bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+        <div className="bg-white/95 backdrop-blur-xl border border-white/70 rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-12 shadow-[0_30px_80px_-24px_rgba(18,51,46,0.22),0_10px_30px_-15px_rgba(185,146,79,0.15)] ring-1 ring-secondary/5 relative min-h-[520px]">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/[0.04] to-transparent rounded-t-[2rem] md:rounded-t-[2.5rem] pointer-events-none" />
           {mounted ? CurrentStep : null}
         </div>
 
