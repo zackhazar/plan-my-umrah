@@ -187,6 +187,30 @@ export const MUTAWWIF = {
   desc: 'Pemandu ibadah berpengalaman mendampingi rombongan Anda selama di Tanah Suci.',
 };
 
+// ---------- Komponen biaya opsional (diadopsi dari template Excel) ----------
+// Semua harga = REFERENSI per unit & bisa diedit jemaah. Total dihitung otomatis.
+export type OptionalUnit = 'per_pax' | 'per_day_pax' | 'flat';
+
+export interface OptionalServiceDef {
+  id: string;
+  name: string;
+  desc: string;
+  unit: OptionalUnit; // per_pax = × jemaah · per_day_pax = × hari × jemaah · flat = sekali
+  defaultPrice: number; // Rupiah per unit (editable)
+  icon: 'Shirt' | 'Wallet' | 'Utensils' | 'Signal' | 'WashingMachine' | 'Syringe' | 'Plane' | 'PiggyBank';
+}
+
+export const OPTIONAL_SERVICES: OptionalServiceDef[] = [
+  { id: 'perlengkapan', name: 'Perlengkapan Ihram & Koper', desc: 'Kain ihram / mukena, koper, tas serba guna. Isi 0 jika sudah punya.', unit: 'per_pax', defaultPrice: 750000, icon: 'Shirt' },
+  { id: 'uang-saku', name: 'Uang Saku / Living Cost', desc: 'Kebutuhan harian, jajan, oleh-oleh selama di Tanah Suci.', unit: 'per_day_pax', defaultPrice: 250000, icon: 'Wallet' },
+  { id: 'katering', name: 'Katering / Makan', desc: 'Paket makan harian jika belum termasuk hotel.', unit: 'per_day_pax', defaultPrice: 150000, icon: 'Utensils' },
+  { id: 'sim', name: 'SIM Card Saudi', desc: 'Kartu internet & telepon lokal (Zain / STC / Mobily), ±SAR 35.', unit: 'per_pax', defaultPrice: 170000, icon: 'Signal' },
+  { id: 'laundry', name: 'Laundry', desc: 'Estimasi cuci pakaian selama perjalanan.', unit: 'per_pax', defaultPrice: 200000, icon: 'WashingMachine' },
+  { id: 'vaksin', name: 'Vaksin Meningitis & Polio', desc: 'Syarat wajib visa umrah (kartu kuning).', unit: 'per_pax', defaultPrice: 350000, icon: 'Syringe' },
+  { id: 'airport-tax', name: 'Airport Tax & Fuel Surcharge', desc: 'Biaya tambahan maskapai jika belum termasuk tiket.', unit: 'per_pax', defaultPrice: 300000, icon: 'Plane' },
+  { id: 'buffer', name: 'Buffer Biaya Tak Terduga', desc: 'Dana cadangan (disarankan 5–10% dari total).', unit: 'per_pax', defaultPrice: 500000, icon: 'PiggyBank' },
+];
+
 // ============================================================
 // TESTIMONI — GANTI dengan testimoni asli Anda!
 // Ratusan testimoni real ada di WA/IG admin; salin ke sini

@@ -37,6 +37,7 @@ export interface OptionalService {
   serviceName: string;
   price: number; // total Rupiah
   days?: number;
+  unitPrice?: number; // harga per unit (per pax / per hari) — untuk item editable
 }
 
 export interface PlannerState {
