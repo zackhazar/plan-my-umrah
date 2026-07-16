@@ -71,7 +71,7 @@ export default function LandingPage() {
                 <MessageCircle className="w-4 h-4 mr-1.5" /> Hubungi Kami
               </Button>
             </a>
-            <Link href="/planner">
+            <Link href="/plan">
               <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-full px-6 h-10 font-medium shadow-md shadow-secondary/15">
                 Mulai Rencanakan
               </Button>
@@ -118,7 +118,7 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12">
-              <Link href="/planner" className="w-full sm:w-auto">
+              <Link href="/plan" className="w-full sm:w-auto">
                 <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-9 h-14 rounded-full text-base font-medium transition-transform hover:-translate-y-0.5 w-full shadow-xl shadow-secondary/20">
                   Hitung Estimasi Saya <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
@@ -307,7 +307,7 @@ export default function LandingPage() {
             <p className="text-secondary-foreground/65 mb-10 leading-relaxed">
               Luangkan 3 menit, dapatkan estimasi lengkap yang bisa langsung Anda konsultasikan dengan tim kami.
             </p>
-            <Link href="/planner">
+            <Link href="/plan">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary-hover px-10 h-14 rounded-full text-base font-semibold transition-transform hover:-translate-y-0.5 shadow-xl shadow-primary/25">
                 Mulai Sekarang — Gratis <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
