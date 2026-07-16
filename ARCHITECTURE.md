@@ -1,186 +1,152 @@
-# ARCHITECTURE.md — Audit Codebase Plan My Umrah
+# ARCHITECTURE.md — Audit Codebase Plan My Umrah (v2)
 
-Tanggal audit: 2026-07-13. Sesi audit-only, tidak ada kode yang diubah.
+Tanggal audit: **2026-07-16**. Sesi audit-only, tidak ada kode yang diubah.
+Menggantikan audit lama (2026-07-13) yang sudah basi — sebagian besar temuan FIX audit lama **sudah dikerjakan** di commit-commit terakhir.
 
 ---
 
 ## 0. Temuan Kunci (TL;DR)
 
-1. **Root project ada di subfolder** `plan-my-umrah/plan-my-umrah/` — repo root hanya berisi README. Ini akan menyulitkan deploy Vercel (harus set *Root Directory*).
-2. **Tidak ada Prisma sama sekali** — tidak ada `schema.prisma`, tidak ada dependency `prisma`/`@prisma/client`. Deskripsi project "Supabase + Prisma" belum terealisasi di kode.
-3. **Supabase belum tersambung sama sekali** — paket `@supabase/ssr` dan `@supabase/supabase-js` ter-install di `package.json`, tapi **nol** pemakaian di source code. Semua data 100% hardcoded.
-4. **`npm run build` GAGAL** di tahap ESLint (6 error). Typecheck (`tsc --noEmit`) lolos. Detail di bagian Build Health.
-5. **Sistem theming Tailwind v4 rusak**: utility `bg-primary`, `text-secondary`, `bg-background`, `border-border`, `bg-card`, dll **tidak tergenerate** di CSS hasil build (diverifikasi dengan grep pada output `.next`). Penyebab: variabel didefinisikan di `:root` sebagai `--primary` dst., tapi Tailwind v4 butuh `@theme` dengan namespace `--color-*`. Blok `@theme inline` khas shadcn/Tailwind-v4 tidak ada di `globals.css`.
-6. **Keamanan: AMAN.** Tidak ada file `.env` atau credential yang ter-commit, baik di working tree maupun di seluruh git history (dicek via `git log --all --diff-filter=A`). `.gitignore` sudah meng-ignore `.env*`.
-7. Aplikasi inti (wizard 9 langkah + kalkulasi biaya) **secara logika sudah lengkap dan berfungsi** — ini fondasi Fase 1 yang bagus. Yang belum ada untuk Fase 1: CTA WhatsApp, dan konsistensi tema visual.
+1. **Build 100% HIJAU.** `npm install` ✅ · `npx tsc --noEmit` ✅ 0 error · `npm run build` ✅ sukses · `next lint` ✅ 0 warning. Semua 6 error ESLint audit lama sudah diperbaiki.
+2. **Root project masih nested** di `plan-my-umrah/plan-my-umrah/`. Bukan blocker — Vercel tinggal set *Root Directory* = `plan-my-umrah`.
+3. **Sebagian besar FIX audit lama SUDAH SELESAI**: config harga terpusat (`src/config/pricing.ts`), CTA WhatsApp dengan pesan prefill lengkap di Step9, nomor WA asli (6282139881976), metadata + `lang="id"` + font Inter/Playfair, `@theme inline` Tailwind v4 sudah benar, tema landing & planner konsisten terang, Step4/Step5 sudah di-merge ke `HotelStep` bersama, persist tanggal (reviver Date) + guard hidrasi, print stylesheet dasar ada.
+4. **Gap terbesar vs BRIEFING.md**: (a) `/` saat ini adalah landing *Plan My Umrah*, **bukan** company profile PT Hajar Aswad Barokah (5 pilar, legalitas PPIU, trust stats 220K); (b) desain memakai tema "ivory + emas + zamrud, serif Playfair" — **bukan** design system "Warm Editorial" (headline sans tebal uppercase, aksen coklat `#8A5A33`, section gelap foto-card, dark/light toggle); (c) planner di `/planner`, briefing menyebut `/plan`; (d) belum ada floating WhatsApp button & scroll-to-top.
+5. **Harga di `pricing.ts` berbeda dari angka BRIEFING §4** — model kode lebih granular (rute per kendaraan SAR, tier visa per pax, kereta per rute) daripada model briefing (3 tier hotel, tier tiket, transport ±4.94jt/grup). Butuh keputusan Zack: mana sumber kebenaran. (Catatan: kode ini justru berasal dari price list resmi + Excel, kemungkinan lebih baru dari briefing.)
+6. **Keamanan: AMAN.** Tidak ada `.env`/credential di working tree maupun seluruh git history. `.gitignore` benar.
+7. Tidak ada Prisma, tidak ada pemakaian Supabase di kode (paket ter-install tapi 0 pemakaian) — sesuai rencana Fase 1 tanpa backend.
 
 ---
 
 ## 1. Struktur Folder Beranotasi
 
 ```
-plan-my-umrah/                          ← REPO ROOT (hanya README + subfolder)
-├── README.md                           ← deskripsi produk 1 paragraf
-└── plan-my-umrah/                      ← ROOT PROJECT SEBENARNYA (Next.js app)
-    ├── package.json                    ← Next 15.5 + React 19 + Tailwind v4 + zustand; supabase ter-install tapi tak dipakai
+plan-my-umrah/                          ← REPO ROOT (README, BRIEFING.md, ARCHITECTURE.md)
+└── plan-my-umrah/                      ← ROOT PROJECT SEBENARNYA (Next.js 15.5 + React 19 + Tailwind v4)
+    ├── package.json                    ← zustand, date-fns, lucide, radix; supabase/next-themes/shadcn ter-install tapi TAK dipakai
     ├── next.config.ts                  ← kosong (default)
-    ├── tsconfig.json                   ← strict mode, alias @/* → src/*
-    ├── components.json                 ← konfigurasi shadcn (style radix-nova)
-    ├── eslint.config.mjs               ← config ESLint Next default
-    ├── postcss.config.mjs              ← Tailwind v4 via @tailwindcss/postcss
-    ├── public/                         ← HANYA aset default create-next-app (next.svg, vercel.svg, dll) — semuanya tak dipakai
+    ├── public/images/
+    │   ├── hotels/ (10 foto)           ← foto hotel asli, dipakai pricing.ts
+    │   ├── vehicles/ (6 foto)          ← foto kendaraan (camry, gmc, staria, hiace, bus, coaster)
+    │   ├── kabbah/kabbah-1.jpg         ← foto hero landing
+    │   └── logo/ (4 SVG)               ← logo brand emas/putih
     └── src/
         ├── app/
-        │   ├── layout.tsx              ← root layout; MASIH default create-next-app (title "Create Next App", lang="en", font Geist)
-        │   ├── page.tsx                ← landing page (tema terang, bahasa Indonesia, CTA → /planner)
-        │   ├── planner/page.tsx        ← wizard 9 langkah (client component, tema gelap)
-        │   ├── globals.css             ← tema "Clean & Elegant" terang; KONFIGURASI @theme TIDAK LENGKAP (lihat Temuan #5)
-        │   └── favicon.ico
-        ├── components/ui/              ← komponen shadcn: button, calendar, input, progress
-        │   └── (progress.tsx tidak pernah dipakai — planner pakai progress bar manual)
+        │   ├── layout.tsx              ← metadata proper, lang="id", font Inter + Playfair ✅
+        │   ├── page.tsx                ← landing Plan My Umrah (bukan company profile PT HAB)
+        │   ├── planner/page.tsx        ← wizard 9 langkah + progress bar + step dots
+        │   └── globals.css             ← tema terang ivory/emas/zamrud; @theme inline Tailwind v4 BENAR ✅
+        ├── components/
+        │   ├── Logo.tsx                ← LogoMark + LogoFull
+        │   └── ui/                     ← shadcn: button, calendar, input, progress (progress = MATI)
+        ├── config/pricing.ts           ← ★ SATU-SATUNYA sumber harga/kontak/testimoni (264 baris)
         ├── features/planner/
-        │   ├── store/usePlannerStore.ts    ← Zustand store + persist ke localStorage; sumber kebenaran state wizard
+        │   ├── itinerary.ts            ← generator itinerary harian D1..Dn dari Excel ✅
+        │   ├── store/usePlannerStore.ts← Zustand + persist v2 (reviver Date) ✅
         │   └── components/
-        │       ├── Step1Travellers.tsx     ← jumlah dewasa/anak/bayi
-        │       ├── Step2Dates.tsx          ← kalender berangkat & pulang
-        │       ├── Step3Flights.tsx        ← bandara + input harga tiket manual
-        │       ├── Step4HotelMakkah.tsx    ← pilih hotel Makkah (DATA HARDCODED) atau harga kustom
-        │       ├── Step5HotelMadinah.tsx   ← pilih hotel Madinah (DATA HARDCODED) — copy-paste Step4
-        │       ├── Step6Transport.tsx      ← 3 paket transport (DATA HARDCODED)
-        │       ├── Step7Visa.tsx           ← 2 paket visa (DATA HARDCODED)
-        │       ├── Step8Optionals.tsx      ← 4 layanan ekstra (DATA HARDCODED)
-        │       └── Step9Summary.tsx        ← rekap grand total + tombol "Cetak PDF" (window.print)
-        ├── lib/utils.ts                ← helper cn() (clsx + tailwind-merge)
-        └── types/planner.types.ts      ← seluruh tipe state planner
+        │       ├── HotelStep.tsx           ← komponen hotel bersama (Makkah/Madinah) ✅ merge selesai
+        │       ├── Step1Travellers.tsx … Step9Summary.tsx  (wizard lengkap)
+        │       └── Step9Summary.tsx        ← breakdown %, itinerary, CTA WhatsApp prefill ✅
+        ├── lib/utils.ts                ← cn()
+        └── types/planner.types.ts      ← tipe state planner (multi-leg transport, visa tier, dll.)
 ```
 
-Total source code: ±1.600 baris. Tidak ada folder `api/`, tidak ada middleware, tidak ada server action — murni aplikasi client-side.
+±2.050 baris source. Murni client-side: tidak ada API route, middleware, server action, database.
 
-## 2. Route / Halaman & Status
+## 2. Route & Status
 
-| Route | File | Status | Catatan |
-|---|---|---|---|
-| `/` | `src/app/page.tsx` | **Setengah jadi** | Konten & copy jadi, tapi styling bergantung pada utility (`text-secondary`, `bg-background`, `font-heading`) yang tidak tergenerate → tampilan aktual rusak/polos. Link navbar semuanya `#` (dummy). Tombol "Login Admin" tidak berfungsi (Fase 2). |
-| `/planner` | `src/app/planner/page.tsx` | **Setengah jadi** | Logika wizard 9 langkah LENGKAP dan kalkulasi benar. Masalah: tema gelap hardcoded bertabrakan dengan tema terang landing/globals.css; utility `bg-primary`/`bg-card` tidak tergenerate. |
-
-Tidak ada route lain. Tidak ada halaman admin, auth, atau API route (bagus untuk Fase 1 — belum ada yang perlu di-defer secara kode).
-
-## 3. Skema Database (Prisma)
-
-**Tidak ada.** Tidak ditemukan `prisma/schema.prisma`, tidak ada dependency Prisma, tidak ada migrasi. Seluruh "model data" saat ini hanya berupa TypeScript interfaces di `src/types/planner.types.ts`:
-
-- `HotelSelection`, `TransportSelection`, `VisaSelection`, `OptionalService`, `PlannerState`
-
-Interfaces ini bisa jadi cetak biru skema database Fase 2 (tabel `hotels`, `transport_packages`, `visa_packages`, `optional_services`), tapi untuk Fase 1 tidak diperlukan.
-
-## 4. Titik Integrasi Supabase
-
-| Item | Status |
-|---|---|
-| Paket `@supabase/supabase-js` + `@supabase/ssr` di package.json | Ter-install, **0 pemakaian** di kode |
-| Client Supabase (`createClient` dsb.) | **Tidak ada** |
-| File `.env` / env vars Supabase | **Tidak ada** |
-| Satu-satunya jejak | Komentar di `Step4HotelMakkah.tsx:14`: *"Mock data: Di tahap produksi, ini akan di-fetch dari Supabase"* |
-
-Kesimpulan: integrasi Supabase = 0%. Semua data mock/hardcoded (daftar di bawah). Untuk Fase 1 ini justru menguntungkan — tidak ada dependensi backend yang harus disiapkan.
-
-## 5. Daftar Data Hardcoded
-
-| Data | Lokasi | Isi |
+| Route | Status | Catatan |
 |---|---|---|
-| Hotel Makkah (4 hotel) | `src/features/planner/components/Step4HotelMakkah.tsx:16-21` | Fairmont Rp 3,5jt/mlm, Swissôtel Rp 2,8jt, Hilton Suites Rp 2,5jt, Elaf Kinda Rp 1,2jt |
-| Hotel Madinah (4 hotel) | `src/features/planner/components/Step5HotelMadinah.tsx:16-21` | Oberoi Rp 4,5jt/mlm, Mövenpick Rp 2,6jt, Pullman Zamzam Rp 2,3jt, Rove Rp 1,1jt |
-| Paket transport (3) | `src/features/planner/components/Step6Transport.tsx:17-39` | Bus Rp 1,5jt, Kereta Haramain Rp 3,5jt, Private GMC Rp 6,5jt (per pax) |
-| Paket visa (2) | `src/features/planner/components/Step7Visa.tsx:15-30` | Visa Umrah+Siskopatuh Rp 3,5jt, Visa Turis Rp 2,8jt (per pax) |
-| Layanan ekstra (4) | `src/features/planner/components/Step8Optionals.tsx:14-19` | Mutawwif Rp 1,5jt, Taif Tour Rp 1,2jt, Lounge Rp 500rb, Handling Rp 1jt |
-| Bandara tujuan (JED/MED) | `src/features/planner/components/Step3Flights.tsx:47-53` | Hardcoded `<option>` di JSX |
-| Warna hex tema gelap | Semua Step1–Step9 | `#121212`, `rgba(214,175,55,...)`, `#E5C158` tersebar di className |
+| `/` | **Jadi & berfungsi** — tapi SALAH PERAN vs briefing | Landing kalkulator (hero foto Ka'bah, cara kerja, kendali, testimoni dari config, footer WA). Briefing minta `/` = company profile PT HAB (5 pilar, legalitas, trust stats). Tombol "Login Admin" & link dummy sudah HILANG ✅ |
+| `/planner` | **Jadi & berfungsi penuh** | Wizard 9 langkah, kalkulasi benar (hotel per-kamar × malam × kamar; tiket/transport per pax dewasa+anak; visa semua pax + tier + BRN; opsional per_pax/per_day_pax/flat), itinerary otomatis, CTA WA + cetak. Briefing menyebut path `/plan` — perlu rename atau redirect |
 
-Rekomendasi (untuk sesi berikutnya, bukan sekarang): satukan semua ke satu file `src/config/pricing.ts`.
+## 3. Prisma / Database
 
-## 6. Kode Mati / Duplikat / Sisa Eksperimen (aman dihapus nanti)
+**Tidak ada** — tidak ada schema.prisma, dependency, atau migrasi. Sesuai Fase 1. `planner.types.ts` tetap cetak biru bagus untuk skema Fase 2.
 
-- `src/components/ui/progress.tsx` — di-import di `planner/page.tsx` tapi tidak pernah dirender (progress bar dibuat manual dengan div).
-- Import tak terpakai: `Image` (`app/page.tsx:4`), `Progress` (`planner/page.tsx:5`), `ShieldCheck` (`Step7Visa.tsx:5`), `Printer` (`Step9Summary.tsx:5`).
-- Variabel tak terpakai: `totalTravellers` di `Step7Visa.tsx:13`.
-- `public/*.svg` (next.svg, vercel.svg, file.svg, globe.svg, window.svg) — aset default create-next-app, tidak direferensikan di mana pun.
-- Duplikasi besar: `Step4HotelMakkah.tsx` dan `Step5HotelMadinah.tsx` ±95% identik (kandidat merge jadi satu komponen `StepHotel` berparameter kota — tapi ini refactor Fase pemolesan, bukan blocker).
-- Dependency mencurigakan di package.json: `shadcn` (^4.11.0) sebagai runtime dependency — ini CLI, seharusnya tidak ada di `dependencies`. `next-themes` ter-install tapi tidak dipakai. `tailwindcss-animate` DAN `tw-animate-css` dua-duanya ter-install (redundan; hanya `tailwindcss-animate` yang di-@plugin).
-- Field `dates` sengaja tidak masuk `partialize` persist di store — kemungkinan disengaja (Date tidak survive JSON), tapi efeknya: refresh halaman di step ≥3 membuat `step` tersimpan tapi tanggal hilang. Dicatat sebagai bug minor, bukan kode mati.
+## 4. Supabase
 
-## 7. Build Health
+Paket `@supabase/supabase-js` + `@supabase/ssr` ter-install, **0 pemakaian** di src (bahkan komentar mock lama sudah hilang). Tidak ada env vars. Fase 1 tidak membutuhkannya — biarkan.
 
-Dijalankan di `plan-my-umrah/plan-my-umrah/` pada 2026-07-13:
+## 5. Data Hardcoded
+
+**Semua data sudah terpusat di `src/config/pricing.ts`** ✅ — hotel (10), rute mobil SAR (14 rute × 4 kendaraan), kereta Haramain (5 rute), bus full trip, tier visa (5 tier + grup 35+), Siskopatuh, BRN, layanan opsional (8 komponen dari Excel), kurs SAR/USD, nomor WA, testimoni (6, ditandai "GANTI dengan testimoni asli").
+Tidak ditemukan harga hardcoded di komponen lain. Satu-satunya "hardcoded" tersisa: mock kartu estimasi di hero `page.tsx` (angka display statis — wajar) dan bandara di config (JED/MED).
+
+⚠️ **Diskrepansi harga vs BRIEFING §4** (perlu keputusan Zack sebelum Sesi 2):
+
+| Item | BRIEFING §4 | pricing.ts sekarang |
+|---|---|---|
+| Hotel | 3 tier per kota (1.8/4/7.1jt & 1.2/2.5/4jt) | 10 hotel riil per nama, 0.95–5jt/kamar/malam |
+| Tiket | 3 tier (11/13.5/18jt) | Input manual per pax (tanpa tier preset) |
+| Visa+Siskopatuh | flat 2.75jt/pax | Tier 2.4–2.8jt + Siskopatuh 200rb terpisah |
+| Transport | ±4.94jt/grup + 950rb/pax | Rute riil per kendaraan (SAR) / kereta / bus 2500 SAR |
+| Uang saku | 3 tier (200/300/500rb) | Default 250rb/hari/pax (editable) |
+| Perlengkapan dll. | 4 item | 8 komponen (dari Excel terbaru) |
+
+Model kode lebih detail dan tampak bersumber dari price list resmi + Excel terbaru → kemungkinan besar KEEP, tapi konfirmasi.
+
+## 6. Kode Mati / Duplikat / Dependency Tak Terpakai
+
+- `src/components/ui/progress.tsx` — tidak di-import di mana pun (progress bar dibuat manual). Aman dihapus.
+- `public/*.svg` bawaan create-next-app (next, vercel, file, globe, window) — tak dipakai.
+- `public/images/vehicles/coaster.png` — tidak direferensikan di pricing.ts (hanya bus-vip.jpg pun tidak dipakai; bus tak punya field image).
+- Dependencies tak terpakai di package.json: `@supabase/*` (Fase 2 — biarkan), `next-themes`, `shadcn` (CLI, salah tempat di dependencies), `tw-animate-css` (redundan dengan `tailwindcss-animate`).
+- Duplikasi Step4/Step5 SUDAH diselesaikan via `HotelStep.tsx` ✅.
+- Warning build: Next mendeteksi lockfile lain di `C:\Users\Dynabook\package-lock.json` (di luar repo) — kosmetik; bisa disenyapkan dengan `outputFileTracingRoot`.
+
+## 7. Build Health (2026-07-16, di `plan-my-umrah/plan-my-umrah/`)
 
 | Perintah | Hasil |
 |---|---|
-| `npm install` | ✅ Sukses, tanpa error |
-| `npx tsc --noEmit` | ✅ Lolos, 0 error |
-| `npm run build` | ❌ **GAGAL** — kompilasi Turbopack sukses, tapi tahap "Linting and checking validity of types" gagal dengan 6 error ESLint |
+| `npm install` | ✅ sukses (ada npm audit advisory minor, tidak memblokir) |
+| `npx tsc --noEmit` | ✅ 0 error |
+| `npm run build` | ✅ **SUKSES** — `/` 8.6 kB, `/planner` 64.6 kB, semua static prerender |
+| `next lint` | ✅ 0 error, 0 warning |
 
-Error ESLint (memblokir build):
-
-1. `app/page.tsx:64` — 2× `react/no-unescaped-entities` (tanda kutip `"` di JSX)
-2. `features/planner/components/Step6Transport.tsx:42` — `@typescript-eslint/no-explicit-any`
-3. `features/planner/store/usePlannerStore.ts:44, 52, 56` — 3× `@typescript-eslint/no-explicit-any`
-
-Warning (tidak memblokir): 5 unused imports/variables (daftar di bagian 6).
-
-Temuan build tambahan (tidak muncul sebagai error, tapi fatal secara visual):
-
-- **CSS token tidak tergenerate.** Grep pada CSS hasil build (`.next/static/chunks/*.css`) hanya menemukan `.font-heading`; `.bg-primary`, `.text-primary`, `.bg-background`, `.text-secondary`, `.border-border`, `.bg-card` **tidak ada**. Penyebab: `globals.css` mendefinisikan `--primary`, `--background`, dll. di `:root` tanpa blok `@theme inline { --color-primary: var(--primary); ... }` yang diwajibkan Tailwind v4. Kelas seperti `hover:bg-primary-hover` juga tidak valid (`--color-primary-hover` didefinisikan di `:root`, bukan `@theme`).
-- **Font tidak nyambung.** `globals.css` mereferensikan `var(--font-inter)` dan `var(--font-playfair)`, tapi `layout.tsx` hanya me-load Geist (`--font-geist-sans`/`--font-geist-mono`). Akibatnya `font-heading` jatuh ke fallback Georgia.
-- `layout.tsx` masih metadata default: `title: "Create Next App"`, `lang="en"` — buruk untuk SEO/lead magnet.
+Tidak ada lagi masalah CSS token: `@theme inline` lengkap, `bg-primary`/`bg-secondary` dkk. tergenerate, font Inter/Playfair tersambung ke `--font-sans`/`--font-heading`.
 
 ## 8. Keamanan
 
-✅ **Tidak ada temuan.** Tidak ada `.env*`, API key, atau credential di working tree maupun di seluruh riwayat git. `.gitignore` sudah benar meng-exclude `.env*`. Belum ada secret yang dibutuhkan karena belum ada integrasi backend.
+✅ **Tidak ada temuan.** Tidak ada `.env*`, API key, atau credential di working tree maupun seluruh git history (dicek `git log --all --diff-filter=A --name-only`). `.gitignore` meng-exclude `.env*`. Nomor WA & harga memang publik by design.
 
 ---
 
 ## 9. Rekomendasi
 
-### KEEP — fondasi solid Fase 1
+### KEEP — fondasi solid
 
-- **Wizard 9 langkah + Zustand store** (`features/planner/*`): arsitektur state bersih, logika kalkulasi di Step9 sudah benar (pax dewasa+anak untuk tiket/transport, semua pax termasuk bayi untuk visa), persist ke localStorage berfungsi.
-- **Struktur feature-folder** (`src/features/planner/`): pola yang tepat, siap menampung fitur Fase 2 tanpa refactor.
-- **Tipe TypeScript** (`types/planner.types.ts`): lengkap dan bisa jadi cetak biru skema DB Fase 2.
-- **Copywriting bahasa Indonesia** di landing dan seluruh step — sudah bagus, tinggal poles.
-- **Keputusan tanpa backend** untuk Fase 1: tidak ada auth, API, atau DB yang menghambat go-live.
+- **Seluruh planner** (`/planner`): wizard 9 langkah, store, itinerary generator, Step9 (breakdown %, WA prefill, print). Ini produk inti dan sudah production-quality secara fungsi.
+- **`src/config/pricing.ts`** sebagai single source of truth (briefing menyebut `lib/config.ts` — tidak perlu pindah, cukup catat bahwa file ini yang dimaksud).
+- **Aset asli** di `public/images/` (hotel, kendaraan, logo, Ka'bah).
+- **Build pipeline** — hijau total, siap deploy hari ini juga.
 
-### FIX — wajib sebelum planner publik live (urut prioritas)
+### FIX — sisa pekerjaan Fase 1 (urut prioritas)
 
 | # | Item | Effort |
 |---|---|---|
-| 1 | Perbaiki 6 error ESLint yang memblokir `npm run build` (escape kutipan, ganti `any` dengan tipe yang sudah ada di `planner.types.ts`) | **S** |
-| 2 | Perbaiki `globals.css`: tambah blok `@theme inline` Tailwind v4 agar `bg-primary`, `bg-background`, dll. tergenerate; putuskan satu tema (terang atau gelap) dan selaraskan landing vs planner | **M** |
-| 3 | Konfigurasi Vercel: set *Root Directory* ke `plan-my-umrah/` (atau pindahkan project ke repo root — lebih bersih tapi butuh persetujuan) | **S** |
-| 4 | **Tambah CTA WhatsApp** di Step9Summary (tujuan utama lead magnet — saat ini hanya ada tombol print). Link `wa.me` berisi ringkasan estimasi | **S** |
-| 5 | `layout.tsx`: metadata proper (title, description, OG), `lang="id"`, load font Inter + Playfair sesuai referensi globals.css | **S** |
-| 6 | Sembunyikan/hapus tombol "Login Admin" dan link navbar dummy (`#`) di landing | **S** |
-| 7 | Ekstrak semua data hardcoded (bagian 5) ke satu file `src/config/pricing.ts` supaya update harga = edit satu file | **S–M** |
-| 8 | Bug minor: `dates` tidak di-persist → user yang refresh di step ≥3 kehilangan tanggal tapi tetap di step tsb; tambahkan juga guard hydration zustand-persist (risiko flash/mismatch SSR) | **S** |
-| 9 | QA mobile + cetak (tombol "Cetak PDF" belum punya print stylesheet; hasil print tema gelap akan boros tinta/jelek) | **M** |
+| 1 | **Keputusan Zack (bukan kode)**: (a) validasi harga pricing.ts vs briefing §4 — mana yang benar; (b) konfirmasi arah desain: redesign penuh ke "Warm Editorial" atau pertahankan tema ivory/emas/zamrud yang sudah jadi & konsisten | — |
+| 2 | **Bangun `/` company profile PT Hajar Aswad Barokah** (hero, 5 pilar layanan, paket unggulan, testimoni, legalitas PPIU/Nusuk, kontak) dan pindahkan landing planner menjadi bagian `/plan` | **L** |
+| 3 | **Rename `/planner` → `/plan`** + redirect permanen `/planner` → `/plan` | **S** |
+| 4 | **Terapkan design system "Warm Editorial"** (jika dikonfirmasi di #1): token warna coklat/copper + ivory/near-black, font display condensed uppercase, kartu layanan foto gelap, dark/light toggle via CSS variables (next-themes sudah ter-install), floating WA button, scroll-to-top | **L** |
+| 5 | Deploy Vercel: Root Directory = `plan-my-umrah`, atau angkat project ke repo root (lebih bersih, butuh persetujuan) | **S** |
+| 6 | Ganti 6 testimoni placeholder di pricing.ts dengan testimoni asli (sudah ditandai di kode) | **S** |
+| 7 | Bersih-bersih: hapus `ui/progress.tsx`, svg default, dependency `shadcn`/`tw-animate-css`; rapikan `next-themes` (pakai atau buang setelah #4) | **S** |
+| 8 | QA mobile + print menyeluruh sebelum production | **M** |
 
-### DEFER — milik Fase 2, jangan disentuh sekarang
+### DEFER — Fase 2, jangan disentuh
 
-- Integrasi Supabase (hotel/harga dari DB) — paket sudah ter-install, biarkan.
-- Prisma + skema database (belum ada; desain dari `planner.types.ts` saat dibutuhkan).
-- Auth & halaman admin (tombol "Login Admin" indikasi rencana ini).
-- Vendor management & quotation engine.
-- Merge duplikasi Step4/Step5 dan pembersihan dependency (`shadcn`, `next-themes`, `tw-animate-css`) — bagus dilakukan, tapi bukan blocker go-live.
+- Supabase (harga dari DB), Prisma/skema, auth & admin dashboard, vendor management, quotation generator, harga hotel real-time/season, fitur AI planner.
 
 ---
 
-## 10. Jawaban Pertanyaan Kunci: Berapa Hari ke Production?
+## 10. Berapa Hari ke Production di Vercel?
 
-**Estimasi realistis: 3–5 hari kerja** (1 developer, harga tetap hardcoded di satu file config).
+**Estimasi realistis: 2–4 hari kerja** (1 developer, harga tetap di `pricing.ts`).
 
-Rincian:
+- **Skenario tercepat — 0.5–1 hari**: deploy apa adanya. Build sudah hijau, planner fungsional penuh dengan CTA WA. Tinggal set Root Directory di Vercel. Yang belum: company profile `/` dan desain Warm Editorial.
+- **Skenario lengkap Fase 1 — 2–4 hari**:
+  - Hari 1: keputusan #1 + deploy preview (#5) + rename `/plan` (#3).
+  - Hari 2–3: company profile `/` (#2) + design system Warm Editorial (#4) — ini blok kerja terbesar.
+  - Hari 4: testimoni asli (#6), bersih-bersih (#7), QA (#8), production + domain.
 
-- **Hari 1**: FIX #1 + #3 → build hijau dan ter-deploy ke Vercel (preview). Ini tercapai cepat karena logika aplikasi sudah utuh.
-- **Hari 2**: FIX #2 + #5 → tema konsisten dan tampilan sesuai desain. Ini item terbesar karena styling saat ini rusak diam-diam.
-- **Hari 3**: FIX #4, #6, #7 → CTA WhatsApp, bersihkan landing, konsolidasi config harga.
-- **Hari 4–5**: FIX #8, #9 → QA mobile/print, polish, domain + production deploy.
-
-Skenario tercepat (minimum layak, tanpa polish print/mobile mendalam): **3 hari**. Skenario aman dengan QA menyeluruh: **5 hari**. Tidak ada risiko teknis besar yang tersembunyi — tidak ada backend, tidak ada auth, dan seluruh masalah yang ditemukan bersifat lokal dan terdefinisi jelas.
+Tidak ada risiko teknis tersembunyi: tanpa backend, tanpa auth, build stabil. Risiko satu-satunya adalah **keputusan produk** (harga & arah desain) — selesaikan #1 dulu sebelum Sesi 2.
