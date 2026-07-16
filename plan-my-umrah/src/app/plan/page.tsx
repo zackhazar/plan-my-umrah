@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePlannerStore } from '@/features/planner/store/usePlannerStore';
 import { LogoFull } from '@/components/Logo';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { Step1Travellers } from '@/features/planner/components/Step1Travellers';
 import { Step2Dates } from '@/features/planner/components/Step2Dates';
 import { Step3Flights } from '@/features/planner/components/Step3Flights';
@@ -56,7 +57,7 @@ export default function PlannerWizard() {
   return (
     <div className="planner-bg min-h-screen relative flex flex-col antialiased text-foreground">
 
-      <header className="print:hidden sticky top-0 z-40 border-b border-secondary/10 bg-white/80 backdrop-blur-xl">
+      <header className="print:hidden sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="container max-w-5xl mx-auto px-4 md:px-6 h-16 flex items-center gap-4 md:gap-8">
           <Link href="/" className="shrink-0">
             <LogoFull markClass="w-9 h-9" />
@@ -73,6 +74,8 @@ export default function PlannerWizard() {
               {step}/{totalSteps} &middot; {STEP_LABELS[step - 1]}
             </span>
           </div>
+
+          <ThemeToggle />
         </div>
 
         {/* Step dots (desktop) */}
@@ -94,7 +97,7 @@ export default function PlannerWizard() {
       </header>
 
       <main className="flex-1 container max-w-4xl mx-auto py-10 md:py-14 px-4 md:px-6 relative z-10">
-        <div className="bg-white/95 backdrop-blur-xl border border-white/70 rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-12 shadow-[0_30px_80px_-24px_rgba(18,51,46,0.22),0_10px_30px_-15px_rgba(185,146,79,0.15)] ring-1 ring-secondary/5 relative min-h-[520px]">
+        <div className="bg-card/95 backdrop-blur-xl border border-border rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-12 shadow-[0_30px_80px_-24px_rgba(18,51,46,0.22),0_10px_30px_-15px_rgba(185,146,79,0.15)] ring-1 ring-secondary/5 relative min-h-[520px]">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
           <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/[0.04] to-transparent rounded-t-[2rem] md:rounded-t-[2.5rem] pointer-events-none" />
           {mounted ? CurrentStep : null}
