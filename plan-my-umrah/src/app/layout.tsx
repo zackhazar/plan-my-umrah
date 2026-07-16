@@ -1,28 +1,32 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Anton, Plus_Jakarta_Sans } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import { FloatingWhatsApp } from "@/components/FloatingWhatsApp";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
-const inter = Inter({
-  variable: "--font-inter",
+const anton = Anton({
+  variable: "--font-anton",
+  weight: "400",
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Plan My Umrah — Kalkulator Biaya Umrah Mandiri",
+  title: "PT Hajar Aswad Barokah — Umrah Mandiri Transparan | Plan My Umrah",
   description:
-    "Rancang perjalanan Umrah Anda sendiri: pilih hotel Makkah & Madinah, transportasi, dan visa, lalu dapatkan estimasi biaya transparan dalam hitungan menit. Oleh PT Hajar Aswad Barokah.",
+    "Visa & Siskopatuh, hotel Makkah & Madinah, transportasi Haramain, muthawwif bersertifikat, dan perlengkapan umrah. Rencanakan umrah mandiri Anda dengan kalkulator biaya transparan Plan My Umrah.",
   openGraph: {
-    title: "Plan My Umrah — Kalkulator Biaya Umrah Mandiri",
+    title: "PT Hajar Aswad Barokah — Umrah Mandiri Transparan",
     description:
-      "Estimasi biaya Umrah mandiri yang transparan: hotel, transportasi, visa, dan layanan ekstra sesuai kebutuhan Anda.",
+      "Rencanakan Umroh mandirimu, setransparan itu. Kalkulator biaya + itinerary otomatis, didampingi travel resmi terdaftar Nusuk.",
     type: "website",
     locale: "id_ID",
-    siteName: "Plan My Umrah",
+    siteName: "PT Hajar Aswad Barokah",
   },
 };
 
@@ -32,9 +36,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
-        {children}
+    <html lang="id" suppressHydrationWarning>
+      <body className={`${jakarta.variable} ${anton.variable} font-sans antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          {children}
+          <FloatingWhatsApp />
+          <ScrollToTop />
+        </ThemeProvider>
       </body>
     </html>
   );

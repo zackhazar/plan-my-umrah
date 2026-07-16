@@ -3,39 +3,75 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ============================================================
+   DESIGN SYSTEM "WARM EDITORIAL"
+   Light : ivory hangat + tinta near-black + aksen coklat
+   Dark  : near-black hangat + teks putih + aksen copper
+   Layout identik di kedua mode — hanya token yang berganti.
+   ============================================================ */
 :root {
-  /* Tema terang: ivory hangat + emas + zamrud (landing page) */
-  --background: #FBFAF7;
-  --foreground: #17211E;
+  --background: #FAF7F1;      /* ivory hangat */
+  --foreground: #17140F;      /* tinta near-black */
 
   --card: #FFFFFF;
-  --card-foreground: #17211E;
+  --card-foreground: #17140F;
   --popover: #FFFFFF;
-  --popover-foreground: #17211E;
+  --popover-foreground: #17140F;
 
-  /* Emas kaya — aksen utama */
-  --primary: #B9924F;
+  /* Coklat hangat — aksen utama (kata kunci headline, tombol pill) */
+  --primary: #8A5A33;
   --primary-foreground: #FFFFFF;
-  --primary-hover: #A67F3E;
+  --primary-hover: #734A28;
 
-  /* Zamrud gelap — warna brand */
-  --secondary: #12332E;
-  --secondary-foreground: #F6F1E7;
+  /* Tinta gelap — dipakai sebagai "ink" untuk heading & section gelap */
+  --secondary: #141210;
+  --secondary-foreground: #F5F1EA;
 
-  --muted: #F1EDE4;
-  --muted-foreground: #6E6A5E;
-  --accent: #F6F1E7;
-  --accent-foreground: #17211E;
+  /* Copper muda — ikon & judul kecil */
+  --copper: #C89B6D;
+
+  --muted: #EFE9DD;
+  --muted-foreground: #6E675C;
+  --accent: #F1EAE0;
+  --accent-foreground: #17140F;
   --destructive: #B3261E;
 
-  --border: rgba(23, 33, 30, 0.09);
-  --input: rgba(23, 33, 30, 0.05);
-  --ring: #B9924F;
+  --border: rgba(23, 20, 15, 0.10);
+  --input: rgba(23, 20, 15, 0.05);
+  --ring: #8A5A33;
 
   --radius: 1rem;
 }
 
-/* Planner memakai tema terang yang sama dengan landing page. */
+.dark {
+  --background: #0E0D0B;
+  --foreground: #F5F1EA;
+
+  --card: #161412;
+  --card-foreground: #F5F1EA;
+  --popover: #161412;
+  --popover-foreground: #F5F1EA;
+
+  /* Di dark mode aksen bergeser ke copper agar tetap hangat & terbaca */
+  --primary: #C89B6D;
+  --primary-foreground: #171310;
+  --primary-hover: #D8B084;
+
+  --secondary: #F5F1EA;
+  --secondary-foreground: #141210;
+
+  --copper: #C89B6D;
+
+  --muted: #1C1915;
+  --muted-foreground: #A39B8C;
+  --accent: #1F1B16;
+  --accent-foreground: #F5F1EA;
+  --destructive: #E5484D;
+
+  --border: rgba(245, 241, 234, 0.12);
+  --input: rgba(245, 241, 234, 0.07);
+  --ring: #C89B6D;
+}
 
 /* Pemetaan token → utility Tailwind v4 (wajib agar bg-primary dkk. tergenerate) */
 @theme inline {
@@ -50,6 +86,7 @@
   --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-copper: var(--copper);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -59,8 +96,8 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-heading: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-jakarta), system-ui, sans-serif;
+  --font-heading: var(--font-anton), Impact, "Arial Narrow", sans-serif;
 }
 
 body {
@@ -70,11 +107,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Latar wizard planner: ivory cerah dengan sentuhan zamrud & emas lembut */
+/* Headline editorial: tebal, uppercase, condensed */
+.font-heading {
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+/* Latar wizard planner: ivory dengan sentuhan coklat lembut */
 .planner-bg {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(18, 51, 46, 0.06), transparent 70%),
-    radial-gradient(ellipse 60% 40% at 90% 110%, rgba(185, 146, 79, 0.08), transparent 70%),
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(138, 90, 51, 0.06), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 110%, rgba(200, 155, 109, 0.08), transparent 70%),
     var(--background);
 }
 
@@ -89,11 +132,11 @@ body {
   }
 }
 
-/* Utilitas tambahan untuk efek kaca pada tema terang */
+/* Utilitas efek kaca — ikut token supaya bekerja di light & dark */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.72);
+  background: color-mix(in srgb, var(--card) 78%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 8px 32px 0 rgba(18, 51, 46, 0.08);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px 0 rgba(20, 18, 16, 0.10);
 }
